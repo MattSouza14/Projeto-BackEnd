@@ -11,6 +11,12 @@ CREATE TABLE users(
     dataCadastro DATE NOT NULL
     );
 
+CREATE TABLE products(
+	id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    enabled BOOL NOT NULL,
+    productName VARCHAR(100) NOT NULL,
+    slug VARCHAR(100) NOT NULL
+    );
 CREATE TABLE categories(
 	id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
     categorieName VARCHAR(120) NOT NULL,
@@ -33,14 +39,15 @@ CREATE TABLE imagesProducts(
     enabled BOOL,
     pathProduct VARCHAR(150) NOT NULL
 );
-
-CREATE TABLE products(
-	id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    enabled BOOL NOT NULL,
-    productName VARCHAR(100) NOT NULL,
-    slug VARCHAR(100) NOT NULL
+CREATE TABLE categories_produtc(
+	product_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
     );
-    
+
+
+
 CREATE TABLE users_products(
 	users_id INT NOT NULL,
     products_id INT NOT NULL,
