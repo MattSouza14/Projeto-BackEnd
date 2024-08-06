@@ -10,6 +10,18 @@
 ### JWT para adicionar segurança e limitar o acesso nas rotas de API
 ### JEST para nos ajudar a testar e manter a qualidade do código
 ### Estrutura de diretório
+
+<details>
+  <summary><strong> Diagrama do Banco de Dados</strong></summary><br>
+
+![diagrama do banco de dados](src/imagens/diagrama_bd.png)
+
+
+
+</details>
+
+
+
 ```
 project-root/
 ├── src/
