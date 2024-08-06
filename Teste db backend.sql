@@ -28,7 +28,7 @@ CREATE TABLE categories(
 CREATE TABLE imagesProducts(
 	id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL,
     product_id INTEGER,
-    FOREIGN KEY (productID) REFERENCES products(id),
+    FOREIGN KEY (product_id) REFERENCES products(id),
     enabled BOOL,
     pathProduct VARCHAR(150) NOT NULL
 );
@@ -39,3 +39,12 @@ CREATE TABLE categories_product(
     FOREIGN KEY (product_id) REFERENCES products(id),
     FOREIGN KEY (category_id) REFERENCES categories(id)
     );
+create table option_products(
+id int primary key auto_increment,
+product_id int not null,
+title varchar(100) not null,
+shape enum ('square', 'circle') default '0',
+`type` enum('text','collor') default 'text',
+`values`varchar(100) not null,
+foreign key (product_id) references products(id)
+);
