@@ -11,10 +11,15 @@ CREATE TABLE users(
     );
 
 CREATE TABLE products(
-	id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    enabled BOOL NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    enabled BOOL NOT NULL DEFAULT '0',
     productName VARCHAR(100) NOT NULL,
-    slug VARCHAR(100) NOT NULL
+    slug VARCHAR(100) NOT NULL,
+    use_in_menu BOOL NOT NULL DEFAULT '0',
+    stock INT NOT NULL ,
+    `description` VARCHAR(100) NOT NULL,
+    price FLOAT NOT NULL,
+    price_with_discount FLOAT NOT NULL
     );
 CREATE TABLE categories(
 	id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
