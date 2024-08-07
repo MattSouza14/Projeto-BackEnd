@@ -1,15 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const Categories = require('../model/categoriesModal')
-
-const sequelize = new Sequelize('railway', 'root', 'DdcFmollntQRrIVsPPmeNIvqasmEpMYt', 
-{
-   host: 'viaduct.proxy.rlwy.net',
-   port: 12970,
-   dialect: 'mysql',
-   logging: false
-   
-}
-);
+const sequelize = require('../config/database')
   
 sequelize.sync()
   .then(() => {
@@ -26,14 +17,3 @@ sequelize.sync()
   .catch(err => {
     console.error('Erro:', err);
   });
-
-//   const { Sequelize } = require('sequelize');
-
-//   const sequelize = new Sequelize('railway', 'root', 'DdcFmollntQRrIVsPPmeNIvqasmEpMYt', 
-//   {
-//     host: 'viaduct.proxy.rlwy.net',
-//     port: '12970',
-//     dialect: 'mysql'
-    
-//   }
-//   );
