@@ -1,13 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-
-// Banco de dados pessoal do Vinicius
-const sequelize = new Sequelize('railway', 'root', 'DdcFmollntQRrIVsPPmeNIvqasmEpMYt', 
-  {
-     host: 'viaduct.proxy.rlwy.net',
-     port: 12970,
-     dialect: 'mysql',
-     logging: false
-  })
+const sequelize = require('../config/database');
 
 sequelize.authenticate()
 .then(() => {
@@ -19,7 +11,7 @@ sequelize.authenticate()
 
 async function getTableStructure() {
    try {
-     const tableName = 'categories'; // Nome da tabela que você quer examinar
+     const tableName = 'categories_product'; // Nome da tabela que você quer examinar
      const tableDescription = await sequelize.getQueryInterface().describeTable(tableName);
      console.log('Table structure:', tableDescription);
    } catch (error) {
