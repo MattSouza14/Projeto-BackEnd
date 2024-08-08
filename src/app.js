@@ -15,7 +15,7 @@ app.get('/', (request, response) => {
 //usando as rotas definidas no arquivo usuarioRoutes
 app.use('/usuario', usuarioRoutes);
 
-app.use('/categorias', categoryRoutes);
+app.use('/v1/category', categoryRoutes);
 
 
 module.exports = app;
