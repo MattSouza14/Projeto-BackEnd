@@ -2,10 +2,13 @@
 // Modelo para rota do usuario quando for criado o controller
 const express = require('express');
 const router = express.Router();
-const getUsuario = require('../controllers/usuarioControler')
+// const {getUsuario, createUsuario} = require('../controllers/usuarioControler')
+
 const usuarioControler = require('../controllers/usuarioControler')
 
-router.get('/:id', usuarioControler, getUsuario)
+router.get('/:id', usuarioControler.getUser)
+router.post('/user', usuarioControler.createUser)
+router.delete('/:id', usuarioControler.deleteUser)
 
 
 
