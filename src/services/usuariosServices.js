@@ -78,11 +78,8 @@ const getUsuario = async (req, res) => {
               dataCadastro:dataCadastro
             });
         })
-        .then(gato => {
-            res.json({
-                message: 'Gato criado com sucesso',
-                gato: gato
-            });
+        .then(user => {
+           res.status(201).json();
         })
         .catch(erro => {
             console.log(erro);
