@@ -1,9 +1,6 @@
-
-const sequelize = require('../server')//Sempre fazer o require quando criar um novo model
-
+const sequelize = require('../config/database')//Sempre fazer o require quando criar um novo model
 const { DataTypes } = require('sequelize');//Sempre fazer o require do datatype ao criar um novo model
-
-const Usuario = sequelize.define('users', { //Lembra de colocar os nomes de acordo com o banco de dados
+const Usuario = sequelize.define('users', { 
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,

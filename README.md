@@ -28,7 +28,7 @@ Este é um projeto de Back-End desenvolvido pelos alunos do programa Geração T
 
 ### Diagrama do Banco de Dados:
 
-![diagrama do banco de dados](src/imagens/diagrama_bd.png)
+![diagrama do banco de dados](src/assets/diagrama_bd.png)
 
 
 
