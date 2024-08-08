@@ -26,7 +26,7 @@ const getUsuario = async (req, res) => {
       }
   }
 
-  const createUsuario = async (req, res) => {
+  const createUsuario1 = async (req, res) => {
     const { userName, surName, email, password, userAtivo, dataCadastro } = Usuario.req.body
     try {
       const salt = await bcrypt.genSalt(10)
@@ -64,6 +64,33 @@ const getUsuario = async (req, res) => {
        })
     }
   }
+  const createUsuario = async (req, res) => {
+  const { userName, surName, userAtivo, email, senha,dataCadastro } = req.body;
+    const saltRounds = 10;
+    bcrypt.hash(senha, saltRounds)
+        .then(senhaCriptografada => {
+            return Usuario.create({
+              userName: userName, 
+              surName: surName, 
+              userAtivo: userAtivo,
+              email: email, 
+              password: senhaCriptografada,
+              dataCadastro:dataCadastro
+            });
+        })
+        .then(gato => {
+            res.json({
+                message: 'Gato criado com sucesso',
+                gato: gato
+            });
+        })
+        .catch(erro => {
+            console.log(erro);
+            res.json({
+                message: 'Erro ao criar gato'
+            });
+        });
+}
   
 
 // const uptadeUsuario = async (req, res)=>{
