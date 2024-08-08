@@ -10,11 +10,14 @@ const createUser = async (req,res)=>{
 // const updateUser = async (req, res)=>{
 //     userServices.updateUsuario(req,res)
 // }
-
+const deleteUser = async (req,res)=>{
+    userServices.deleteUsuario(req,res)
+}
 
 module.exports = {
     getUser,
-    createUser
+    createUser,
+    deleteUser
     // updateUser
 }
 
