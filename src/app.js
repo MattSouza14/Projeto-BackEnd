@@ -8,7 +8,7 @@ const usuarioRoutes = require('./routes/usuarioRoutes');
 
 // Uso das rotas
 app.get('/', (request, response) => {
-    response.send('Mensagem de apresentação da api');
+    response.send('olha minha api que legal');
 });
 
 //usando as rotas definidas no arquivo usuarioRoutes
