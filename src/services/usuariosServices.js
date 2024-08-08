@@ -104,7 +104,42 @@ const getUsuario = async (req, res) => {
 
 //     }
 // }
+
+
+
+
+
+
+
+
+
+const deleteUsuario = async (req, res) => {
+    try {
+        const userId = req.params.id
+        const usuario = await Usuario.destroy({ where: { id: userId } });
+
+            if(usuario){
+                let objSucess ={
+                    statusCode: 200,
+                    id: usuario.id,
+                    firstname: usuario.userName,
+                    surname:usuario.surName,
+                    email: usuario.email
+                }
+                res.status(200).json(objSucess)
+            }else{
+                res.status(404).send('Usuario não encontrado ou não existe')
+            }
+        
+        
+        }catch(erro) {
+        console.error('Erro ao buscar usuário:', erro)
+      }
+  }
+
+
 module.exports = {
     getUsuario,
-    createUsuario
+    createUsuario,
+    deleteUsuario
 }
