@@ -6,7 +6,12 @@ const getCategories = (req, res) => {
 	CategoriesServices.getCategories(req, res)
 };
 
+const getCategory = (req, res) => {
+  CategoriesServices.getCategory(req, res)
+}
+
 // Exportando as funções
 module.exports = {
-  getCategories
+  getCategories,
+  getCategory
 };

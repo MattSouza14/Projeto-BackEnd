@@ -39,6 +39,30 @@ const getCategories = async (req, res) => {
   }
 };
 
+const getCategory = async (req, res) =>{
+  try {
+    const categoryId = req.params.id
+    const categoria = await Categories.findByPk(categoryId)
+    if (categoria) {
+      let objSucess = {
+        id: categoria.id,
+        name: categoria.name,
+        slug: categoria.slug,
+        use_in_menu: categoria.use_in_menu
+      }
+      res.status(200).json(objSucess)
+    } else {
+      res.status(404).json({
+        error: "Um erro muito paia"
+      })
+    }
+
+    
+  } catch{
+
+  }
+}
 module.exports = {
-  getCategories
+  getCategories,
+  getCategory
 };

@@ -4,5 +4,6 @@ const categoriesController = require('../controllers/categoriesController');
 
 // Rota para obter todos os categories
 router.get('/search', categoriesController.getCategories);
+router.get('/:id', categoriesController.getCategory)
 
 module.exports = router;
