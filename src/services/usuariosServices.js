@@ -26,80 +26,81 @@ const getUsuario = async (req, res) => {
       }
   }
 
-  const createUsuario = async (req, res) => {
-    const { userName, surName, userAtivo, email, password, dataCadastro } = req.body;
-    const saltRounds = 10;
-    try {
-       let senhaCriptografada = await bcrypt.hash(password, saltRounds);
-        
-        const newUser = await Usuario.create({
-            userName: userName, 
-            surName: surName, 
-            userAtivo: userAtivo,
-            email: email, 
-            password: senhaCriptografada,
-            dataCadastro: dataCadastro,
-        });
-
-        let createSucess = {
-            statusCode: 201,
-            firstname: newUser.userName,
-            surname: newUser.surName,
-            email: newUser.email,
-            password: newUser.password,
-        };
-
-        res.status(201).json(createSucess);
-
-    } catch (erro) {
-        console.log(erro);
-        res.status(400).json({
-            statusCode: 400,
-            message: 'Erro ao criar um novo usuario'
-        });
-    }
-}
-
 //   const createUsuario = async (req, res) => {
-//     const { userName, surName, userAtivo, email, password, dataCadastro} = Usuario;
+//     const { userName, surName, userAtivo, email, password, dataCadastro } = req.body;
 //     const saltRounds = 10;
-//       bcrypt.hash(password, saltRounds)
-//           .then(senhaCriptografada => {
-//               return Usuario.create({
-//                 userName: userName, 
-//                 surName: surName, 
-//                 userAtivo: userAtivo,
-//                 email: email, 
-//                 password: senhaCriptografada,
-//                 dataCadastro:dataCadastro,
-//                 createAt: createdAt,
-//                 updateAt: updatedAt
-//               });
-//           })
-//           .then(user => {
-//             let createSucess ={
-//               statusCode: 201,
-//               firstname: user.userName,
-//               surname: user.surName,
-//               email: user.email,
-//               password: user.password,
-//             }
-//              res.status(201).json(createSucess);
-//           })
-//           .catch(erro => {
-//               console.log(erro);
-//               res.status(400).json({
-//                   statusCode: 400,
-//                   message: 'Erro ao criar um novo usuario'
-//               });
-//           });
-//   }
-    
-// const uptadeUsuario = async (req, res)=>{
-//     try{
+//     try {
+//        let senhaCriptografada = await bcrypt.hash(password, saltRounds);
+        
+//         const newUser = await Usuario.create({
+//             userName: userName, 
+//             surName: surName, 
+//             userAtivo: userAtivo,
+//             email: email, 
+//             password: senhaCriptografada,
+//             dataCadastro: dataCadastro,
+//         });
 
+//         let createSucess = {
+//             statusCode: 201,
+//             firstname: newUser.userName,
+//             surname: newUser.surName,
+//             email: newUser.email,
+//             password: newUser.password,
+//         };
+
+//         res.status(201).json(createSucess);
+
+//     } catch (erro) {
+//         console.log(erro);
+//         res.status(400).json({
+//             statusCode: 400,
+//             message: 'Erro ao criar um novo usuario'
+//         });
 //     }
 // }
+
+// const createUsuario = async (req, res) => {
+//     const { userName, surName, userAtivo, email, password, dataCadastro } = req.body;
+//     const saltRounds = 10;
+
+//     if (!userName || !surName || !email || !password) {
+//         return res.status(400).json({
+//             statusCode: 400,
+//             message: 'Por favor, preencha todos os campos obrigatórios'
+//         });
+//     }
+
+//     try {
+//         let senhaCriptografada = await bcrypt.hash(password, saltRounds);
+
+//         const newUser = await Usuario.create({
+//             userName,
+//             surName,
+//             userAtivo,
+//             email,
+//             password: senhaCriptografada,
+//             dataCadastro,
+//         });
+
+//         let createSucess = {
+//             statusCode: 201,
+//             firstname: newUser.userName,
+//             surname: newUser.surName,
+//             email: newUser.email,
+//         };
+
+//         res.status(201).json(createSucess);
+
+//     } catch (erro) {
+//         console.log(erro);
+//         res.status(400).json({
+//             statusCode: 400,
+//             message: 'Erro ao criar um novo usuario'
+//         });
+//     }
+// }
+
 
 const updateUsuario = async (req, res) => {
     const { id } = req.params;
