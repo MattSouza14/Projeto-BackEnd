@@ -1,34 +1,44 @@
-const Categories = require('../models/categoriesModal')
-  
-// Função para obter todos os usuários
+const Categories = require('../models/categoriesModal');
+
 const getCategories = async (req, res) => {
   try {
-    const { limit } = req.query;
-    let limitValue = 12
+    const { limit, page, fields, use_in_menu } = req.query;
+    
+    let limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12);
+    const pageValue = page && limitValue ? parseInt(page, 10) : 1;
+    const attributes = fields ? fields.split(',') : null;
 
-    if (limit === '-1') {
-      limitValue = null
-    } else if (limit) {
-      limitValue = parseInt(limit, 10)
+    const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0;
+
+    let filtro = {}
+    if (use_in_menu === 'true') {
+      filtro = {use_in_menu: 1}
+    } else if (use_in_menu === 'false') {
+      filtro = {use_in_menu: 0}
     }
 
-    const categories = await Categories.findAll({limit: limitValue});
+    const total = await Categories.count();
 
-    let total = categories.length
+    const categories = await Categories.findAll({
+      where: filtro,
+      limit: limitValue,
+      offset: offset,
+      attributes: attributes
+    });
+
     res.status(200).json({
-      data: 
-      categories,
-      "total": total,
-      "limit": limit,
-      "page": 1
+      data: categories,
+      total: total,
+      limit: limitValue,
+      page: pageValue
     });
 
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao obter categoria.' });
+    console.error('Erro ao obter categorias:', error);
+    res.status(500).json({ error: 'Erro ao obter categorias.' });
   }
 };
 
 module.exports = {
   getCategories
-  
 };
