@@ -8,6 +8,7 @@ const usuarioControler = require('../controllers/usuarioControler')
 
 router.get('/:id', usuarioControler.getUser)
 router.post('/user', usuarioControler.createUser)
+router.put('/:id', usuarioControler.updateUser);
 router.delete('/:id', usuarioControler.deleteUser)
 
 
