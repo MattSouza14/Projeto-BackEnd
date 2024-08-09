@@ -1,4 +1,8 @@
 //Lembra de fazer a substuição para receber o app e botar a configução do banco de dados na pasta config, arquivo database.js!!!!!!!!!!!!!
+//ATENÇÃO:=====================================================================
+//node --env-file=../.env server.js   <- nova maneira de iniciar o server.js!!!!!!!!
+//=============================================================================
+
 const app = require('./app');
 const sequelize = require('./config/database')
 
