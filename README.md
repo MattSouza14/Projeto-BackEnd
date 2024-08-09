@@ -50,3 +50,5 @@ project-root/
 ├── .gitignore
 └── package.json
 ```
+## Passo a passo:
+- ```node --env-file=../.env server.js```: Iniciando o servidor
