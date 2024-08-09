@@ -117,14 +117,14 @@ const deleteUsuario = async (req, res) => {
                     surname:usuario.surName,
                     email: usuario.email
                 }
-                res.status(200).json(objSucess)
+                res.status(204).json(objSucess)
             }else{
-                res.status(404).send('Usuario não encontrado ou não existe')
+                res.status(401).send('Usuario não encontrado ou não existe')
             }
         
         
         }catch(erro) {
-        console.error('Erro ao buscar usuário:', erro)
+        console.error('404 - Erro ao buscar usuário:', erro)
       }
   }
 
