@@ -6,7 +6,7 @@ const getCategories = async (req, res) => {
     
     let limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12);
     const pageValue = page && limitValue ? parseInt(page, 10) : 1;
-    const attributes = fields ? fields.split(',') : null;
+    const attributes = fields ? fields.split(',') : ['id', 'name', 'slug', 'use_in_menu'];
 
     const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0;
 
@@ -35,33 +35,31 @@ const getCategories = async (req, res) => {
 
   } catch (error) {
     console.error('Erro ao obter categorias:', error);
-    res.status(500).json({ error: 'Erro ao obter categorias.' });
+    res.status(400).json({ error: 'dados da requisição incorretos' });
   }
 };
 
 const getCategory = async (req, res) =>{
   try {
     const categoryId = req.params.id
-    const categoria = await Categories.findByPk(categoryId)
+    const attributes = ['id', 'name', 'slug', 'use_in_menu']
+    const categoria = await Categories.findByPk(categoryId, {attributes: attributes})
+  
     if (categoria) {
-      let objSucess = {
-        id: categoria.id,
-        name: categoria.name,
-        slug: categoria.slug,
-        use_in_menu: categoria.use_in_menu
-      }
-      res.status(200).json(objSucess)
+      res.status(200).json(categoria)
     } else {
-      res.status(404).json({
-        error: "Um erro muito paia"
-      })
+      res.status(404).json({ error: "o recurso solicitado não existe" })
     }
 
-    
   } catch{
-
+    res.status(500).json({ error: "Erro de conexão" })
   }
 }
+
+const postCategory = async (req, res) => {
+  
+}
+
 module.exports = {
   getCategories,
   getCategory
