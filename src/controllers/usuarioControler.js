@@ -1,6 +1,10 @@
 // const Usuario = require('../models/usuariosModel')
 const userServices = require('../services/usuariosServices')
 
+
+const getUsers = async(req, res)=>{
+    userServices.getAllUsuarios(req, res)
+}
 const getUser = async (req, res)=>{
     userServices.getUsuario(req, res)
 }   
@@ -18,6 +22,7 @@ module.exports = {
     getUser,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUsers
 }
 

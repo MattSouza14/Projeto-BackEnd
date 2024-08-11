@@ -1,6 +1,30 @@
 const bcrypt = require('bcrypt');
 const Usuario = require('../models/usuariosModel')
 
+  
+const getAllUsuarios = (req, res) => {
+    Usuario.findAll()
+        .then(usuarios => {
+            // objSucess = {
+            //     StatusCode : 200,
+            //     Id: usuarios.id,
+            //     fristName: usuarios.fristName,
+            //     surName: usuarios.surName,
+            //     Email: usuarios.email
+            // }
+        
+            res.status(200).json(usuarios)
+        })
+        .catch(erro => {
+            console.error('Erro ao listar os usuários', erro)
+            res.status(500).json({
+                statusCode: 500,
+                message: 'Erro ao listar os usuários'
+            })
+        })
+}
+
+
 
 const getUsuario = async (req, res) => {
     try {
@@ -133,5 +157,7 @@ module.exports = {
     getUsuario,
     createUsuario,
     updateUsuario,
-    deleteUsuario
+    deleteUsuario,
+    getAllUsuarios
+    
 }
