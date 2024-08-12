@@ -10,6 +10,7 @@ router.get('/Users/listar', usuarioControler.getUsers)
 router.post('/createUser', usuarioControler.createUser)
 router.put('/:id', usuarioControler.updateUser);
 router.delete('/:id', usuarioControler.deleteUser)
+router.post('/v1/user/token/:email', usuarioControler.loginUser)
 
 
 

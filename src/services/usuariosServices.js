@@ -1,18 +1,51 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
 const Usuario = require('../models/usuariosModel')
 
-  
+
+const login = async(req, res) => {
+    try {
+    const { email, password} = req.body;
+
+    const user = await Usuario.findOne({ where: { email: email },  attributes: ['email', 'password'] })
+        console.log(user)
+    if (!user) {
+        return res.status(401).json({ 
+            email: user.email,
+            password: user.password
+            })
+    }
+
+    const senhaCorreta = await bcrypt.compare(password, user.dataValues.password)
+    
+    console.log(senhaCorreta)
+    console.log(user.dataValues.password)
+    console.log(password)
+
+    if (!senhaCorreta) {
+        return res.status(401).json({ message: 'Senha inválida' })
+    }
+    const token = jwt.sign(
+		    { id: user.dataValues.id, 
+              email: user.dataValues.email },
+              process.env.JWT_SECRET,
+		    { expiresIn: '1h' }
+    )
+   
+    
+    res.status(200).json(
+        { message: 'Login realizado com sucesso', token: token })  
+        
+    } catch (error) {
+        res.status(400).json({ message: 'Erro ao fazer login' })
+    }
+    
+
+}
 const getAllUsuarios = (req, res) => {
     Usuario.findAll()
         .then(usuarios => {
-            // objSucess = {
-            //     StatusCode : 200,
-            //     Id: usuarios.id,
-            //     fristName: usuarios.fristName,
-            //     surName: usuarios.surName,
-            //     Email: usuarios.email
-            // }
-        
             res.status(200).json(usuarios)
         })
         .catch(erro => {
@@ -23,8 +56,6 @@ const getAllUsuarios = (req, res) => {
             })
         })
 }
-
-
 
 const getUsuario = async (req, res) => {
     try {
@@ -49,7 +80,7 @@ const getUsuario = async (req, res) => {
       }
   }
 
-  const createUsuario = async (req, res) => {
+const createUsuario = async (req, res) => {
     const { userName, surName, userAtivo, email, password, dataCadastro } = req.body;
    
     const saltRounds = 10;
@@ -158,6 +189,7 @@ module.exports = {
     createUsuario,
     updateUsuario,
     deleteUsuario,
-    getAllUsuarios
+    getAllUsuarios,
+    login
     
 }
