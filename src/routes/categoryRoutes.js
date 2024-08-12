@@ -6,5 +6,6 @@ const categoriesController = require('../controllers/categoriesController');
 router.get('/search', categoriesController.getCategories);
 router.get('/:id', categoriesController.getCategory)
 router.post('/', categoriesController.createCategory)
+router.put('/:id', categoriesController.updateCategory)
 
 module.exports = router;

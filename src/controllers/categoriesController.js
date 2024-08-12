@@ -14,9 +14,14 @@ const createCategory = (req, res) => {
   CategoriesServices.createCategory(req, res)
 }
 
+const updateCategory = (req, res) => {
+  CategoriesServices.updateCategory(req, res)
+}
+
 // Exportando as funções
 module.exports = {
   getCategories,
   getCategory,
-  createCategory
+  createCategory,
+  updateCategory
 };

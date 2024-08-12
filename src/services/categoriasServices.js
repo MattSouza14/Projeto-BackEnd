@@ -88,8 +88,53 @@ const createCategory = async (req, res) => {
   }
 }
 
+const updateCategory = async (req, res) => {
+  const { id } = req.params
+  const { name, slug, use_in_menu } = req.body
+
+  if (Object.keys(req.body).length === 0) {
+    return res.status(204).end()
+  }
+
+  if (!req.body.hasOwnProperty('name') ||
+  !req.body.hasOwnProperty('slug')||
+  !req.body.hasOwnProperty('use_in_menu')) {
+    return res.status(400).json({
+    statusCode: 400,
+    message: 'Dados da requisição incorretos',
+  });
+  }
+
+  const category = await Categories.findByPk(id)
+  
+  if (!category) {
+    return res.status(404).json({
+      statusCode: 404,
+      message: 'Categoria não encontrada'
+    })
+  }
+
+  try {
+    await category.update({ name, slug, use_in_menu })
+
+    return res.status(200).json({
+      statusCode: 200,
+      message: 'Categoria atualizada com sucesso',
+      data: category
+    })
+
+  } catch (erro) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: 'Erro ao atualizar a categoria',
+      detalhes: erro.message
+    })
+  }
+}
+
 module.exports = {
   getCategories,
   getCategory,
-  createCategory
+  createCategory,
+  updateCategory
 };
