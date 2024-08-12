@@ -1,32 +1,82 @@
 const Product = require('../models/productModel.js');
 
-const getProduct = async (req, res) => {
-    try{const productId = req.params.id
-    const product = await Product.findByPk(productId)
-        if(product){
-            let objSucess ={
-                statusCode: 200,
-                id: product.id,
-                enabled: product.enabled,
-                productName: product.productName,
-                slug: product.slug,
-                use_in_menu: product.use_in_menu,
-                stock: product.stock,
-                description: product.description,
-                price: product.price,
-                price_with_discount: product.price_with_discount,
-            }
-            res.status(200).json(objSucess)
-        }else{ 
-            res.status(404).send({ statusCode: 404, message: 'Produto não encontrado' });
-        }
-    }catch(error) {
-        console.error('Erro ao buscar produto:', error);
-        res.status(500).json({ statusCode: 500, message: 'Erro ao buscar produto', error: error.message });
-    }
+// const getProduct = async (req, res) => {
+//     try{const productId = req.params.id
+
       
+//     const product = await Product.findByPk(productId)
+//         if(product){
+//             let objSucess ={
+//                 statusCode: 200,
+//                 id: product.id,
+//                 enabled: product.enabled,
+//                 productName: product.productName,
+//                 slug: product.slug,
+//                 use_in_menu: product.use_in_menu,
+//                 stock: product.stock,
+//                 description: product.description,
+//                 price: product.price,
+//                 price_with_discount: product.price_with_discount,
+//             }
+//             res.status(200).json(objSucess)
+//         }else{ 
+//             res.status(404).send({ statusCode: 404, message: 'Produto não encontrado' });
+//         }
+//     }catch(error) {
+//         console.error('Erro ao buscar produto:', error);
+//         res.status(500).json({ statusCode: 500, message: 'Erro ao buscar produto', error: error.message });
+//     }
+
     
-}
+    
+// }
+
+const getProduct = async (req, res) => {
+  try {
+      // Obtendo parâmetros da query string
+      const { limit, page, fields, use_in_menu } = req.query;
+      
+      // Definindo o valor de limite e página
+      let limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12);
+      const pageValue = page && limitValue ? parseInt(page, 10) : 1;
+      const attributes = fields ? fields.split(',') : ['id', 'name', 'slug', 'use_in_menu'];
+
+      // Calculando o offset para paginação
+      const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0;
+
+      // Criando o filtro para use_in_menu
+      let filtro = {};
+      if (use_in_menu === 'true') {
+          filtro.use_in_menu = 1;
+      } else if (use_in_menu === 'false') {
+          filtro.use_in_menu = 0;
+      }
+
+      // Buscar produtos com base nos filtros e parâmetros de paginação
+      const products = await Product.findAll({
+          attributes,
+          where: filtro,
+          limit: limitValue,
+          offset: offset
+      });
+
+      // Construir a resposta
+      if (products.length > 0) {
+          res.status(200).json({
+              statusCode: 200,
+              data: products,
+              total: await Product.count({ where: filtro }), // Contar o total de produtos que correspondem ao filtro
+              limit: limitValue,
+              page: pageValue
+          });
+      } else {
+          res.status(404).json({ statusCode: 404, message: 'Nenhum produto encontrado' });
+      }
+  } catch (error) {
+      console.error('Erro ao buscar produtos:', error);
+      res.status(500).json({ statusCode: 500, message: 'Erro ao buscar produtos', error: error.message });
+  }
+};
 
 const createProduct = async (req, res) => {
   
