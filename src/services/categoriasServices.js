@@ -1,3 +1,5 @@
+// falta a autenticação do token (401)
+
 const Categories = require('../models/categoriesModal');
 
 const getCategories = async (req, res) => {
@@ -56,11 +58,38 @@ const getCategory = async (req, res) =>{
   }
 }
 
-const postCategory = async (req, res) => {
+const createCategory = async (req, res) => {
+
+  const { name, slug, use_in_menu } = req.body;
   
+  try {
+      
+    const newCategory = await Categories.create({
+      name: name,
+      slug: slug,
+      use_in_menu: use_in_menu
+    });
+
+    let createSucess = {
+      statusCode: 201,
+      name: newCategory.name,
+      slug: newCategory.slug,
+      use_in_menu: newCategory.use_in_menu
+    };
+
+    res.status(201).json(createSucess);
+
+  } catch (erro) {
+    console.log(erro);
+    res.status(400).json({
+      statusCode: 400,
+      message: 'dados da requisição incorretos'
+    });
+  }
 }
 
 module.exports = {
   getCategories,
-  getCategory
+  getCategory,
+  createCategory
 };
