@@ -1,5 +1,36 @@
 const Product = require('../models/productModel.js');
 
+// const getProduct = async (req, res) => {
+//     try{const productId = req.params.id
+
+      
+//     const product = await Product.findByPk(productId)
+//         if(product){
+//             let objSucess ={
+//                 statusCode: 200,
+//                 id: product.id,
+//                 enabled: product.enabled,
+//                 productName: product.productName,
+//                 slug: product.slug,
+//                 use_in_menu: product.use_in_menu,
+//                 stock: product.stock,
+//                 description: product.description,
+//                 price: product.price,
+//                 price_with_discount: product.price_with_discount,
+//             }
+//             res.status(200).json(objSucess)
+//         }else{ 
+//             res.status(404).send({ statusCode: 404, message: 'Produto não encontrado' });
+//         }
+//     }catch(error) {
+//         console.error('Erro ao buscar produto:', error);
+//         res.status(500).json({ statusCode: 500, message: 'Erro ao buscar produto', error: error.message });
+//     }
+
+    
+    
+// }
+
 const getProduct = async (req, res) => {
     try {
         const {limit = '12',page = '1',  fields,match,category_ids,'price-range': priceRange,options} = req.query;
