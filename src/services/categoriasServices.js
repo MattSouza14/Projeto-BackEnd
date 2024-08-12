@@ -42,20 +42,17 @@ const getCategories = async (req, res) => {
 };
 
 const getCategory = async (req, res) =>{
-  try {
-    const categoryId = req.params.id
-    const attributes = ['id', 'name', 'slug', 'use_in_menu']
-    const categoria = await Categories.findByPk(categoryId, {attributes: attributes})
-  
-    if (categoria) {
-      res.status(200).json(categoria)
-    } else {
-      res.status(404).json({ error: "o recurso solicitado não existe" })
-    }
 
-  } catch{
-    res.status(500).json({ error: "Erro de conexão" })
+  const categoryId = req.params.id
+  const attributes = ['id', 'name', 'slug', 'use_in_menu']
+  const categoria = await Categories.findByPk(categoryId, {attributes: attributes})
+
+  if (categoria) {
+    res.status(200).json(categoria)
+  } else {
+    res.status(404).json({ error: "o recurso solicitado não existe" })
   }
+
 }
 
 const createCategory = async (req, res) => {
@@ -132,9 +129,27 @@ const updateCategory = async (req, res) => {
   }
 }
 
+const deleteCategory = async (req, res) => {
+  const { id } = req.params
+  const categoria = await Categories.destroy({ where: { id: id } })
+  
+  if (categoria) {
+    return res.status(200).json({
+    statusCode: 200,
+    message: 'Deleção bem sucedida'
+    })
+  } else {
+    res.status(404).json({
+    statusCode: 404,
+    message: 'recurso solicitado não existe'
+    })
+  }
+}
+
 module.exports = {
   getCategories,
   getCategory,
   createCategory,
-  updateCategory
-};
+  updateCategory,
+  deleteCategory
+}

@@ -18,10 +18,15 @@ const updateCategory = (req, res) => {
   CategoriesServices.updateCategory(req, res)
 }
 
+const deleteCategory = (req, res) => {
+  CategoriesServices.deleteCategory(req, res)
+}
+
 // Exportando as funções
 module.exports = {
   getCategories,
   getCategory,
   createCategory,
-  updateCategory
+  updateCategory,
+  deleteCategory
 };
