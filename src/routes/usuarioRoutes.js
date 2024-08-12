@@ -5,11 +5,12 @@ const router = express.Router();
 
 const usuarioControler = require('../controllers/usuarioControler')
 
-router.get('/:id', usuarioControler.getUser)
-router.get('/Users/listar', usuarioControler.getUsers)
-router.post('/createUser', usuarioControler.createUser)
-router.put('/:id', usuarioControler.updateUser);
-router.delete('/:id', usuarioControler.deleteUser)
+router.get('/User/:id', usuarioControler.getUser)
+router.get('/ListUsers', usuarioControler.getUsers)
+router.post('/Users', usuarioControler.createUser)
+router.put('/Users/:id', usuarioControler.updateUser);
+router.delete('/Users/:id', usuarioControler.deleteUser)
+router.post('/v1/user/token/:email', usuarioControler.loginUser)
 
 
 
