@@ -1,3 +1,5 @@
+// falta a autenticação do token (401)
+
 const Categories = require('../models/categoriesModal');
 
 const getCategories = async (req, res) => {
@@ -40,27 +42,114 @@ const getCategories = async (req, res) => {
 };
 
 const getCategory = async (req, res) =>{
-  try {
-    const categoryId = req.params.id
-    const attributes = ['id', 'name', 'slug', 'use_in_menu']
-    const categoria = await Categories.findByPk(categoryId, {attributes: attributes})
-  
-    if (categoria) {
-      res.status(200).json(categoria)
-    } else {
-      res.status(404).json({ error: "o recurso solicitado não existe" })
-    }
 
-  } catch{
-    res.status(500).json({ error: "Erro de conexão" })
+  const categoryId = req.params.id
+  const attributes = ['id', 'name', 'slug', 'use_in_menu']
+  const categoria = await Categories.findByPk(categoryId, {attributes: attributes})
+
+  if (categoria) {
+    res.status(200).json(categoria)
+  } else {
+    res.status(404).json({ error: "o recurso solicitado não existe" })
+  }
+
+}
+
+const createCategory = async (req, res) => {
+
+  const { name, slug, use_in_menu } = req.body;
+  
+  try {
+      
+    const newCategory = await Categories.create({
+      name: name,
+      slug: slug,
+      use_in_menu: use_in_menu
+    });
+
+    let createSucess = {
+      statusCode: 201,
+      name: newCategory.name,
+      slug: newCategory.slug,
+      use_in_menu: newCategory.use_in_menu
+    };
+
+    res.status(201).json(createSucess);
+
+  } catch (erro) {
+    console.log(erro);
+    res.status(400).json({
+      statusCode: 400,
+      message: 'dados da requisição incorretos'
+    });
   }
 }
 
-const postCategory = async (req, res) => {
+const updateCategory = async (req, res) => {
+  const { id } = req.params
+  const { name, slug, use_in_menu } = req.body
+
+  if (Object.keys(req.body).length === 0) {
+    return res.status(204).end()
+  }
+
+  if (!req.body.hasOwnProperty('name') ||
+  !req.body.hasOwnProperty('slug')||
+  !req.body.hasOwnProperty('use_in_menu')) {
+    return res.status(400).json({
+    statusCode: 400,
+    message: 'Dados da requisição incorretos',
+  });
+  }
+
+  const category = await Categories.findByPk(id)
   
+  if (!category) {
+    return res.status(404).json({
+      statusCode: 404,
+      message: 'Categoria não encontrada'
+    })
+  }
+
+  try {
+    await category.update({ name, slug, use_in_menu })
+
+    return res.status(200).json({
+      statusCode: 200,
+      message: 'Categoria atualizada com sucesso',
+      data: category
+    })
+
+  } catch (erro) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: 'Erro ao atualizar a categoria',
+      detalhes: erro.message
+    })
+  }
+}
+
+const deleteCategory = async (req, res) => {
+  const { id } = req.params
+  const categoria = await Categories.destroy({ where: { id: id } })
+  
+  if (categoria) {
+    return res.status(200).json({
+    statusCode: 200,
+    message: 'Deleção bem sucedida'
+    })
+  } else {
+    res.status(404).json({
+    statusCode: 404,
+    message: 'recurso solicitado não existe'
+    })
+  }
 }
 
 module.exports = {
   getCategories,
-  getCategory
-};
+  getCategory,
+  createCategory,
+  updateCategory,
+  deleteCategory
+}
