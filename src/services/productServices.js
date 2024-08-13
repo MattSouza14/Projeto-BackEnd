@@ -44,6 +44,8 @@ const getProducts = async (req, res) => {
         limit: limitValue,
         offset: offset,
         attributes: attributes
+
+        
       });
   
       res.status(200).json({

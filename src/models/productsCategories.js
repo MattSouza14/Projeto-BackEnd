@@ -25,8 +25,8 @@ const productsCategories = sequelize.define('productsCategories',{
 
 });
 
-ProductsCategories.removeAttribute('id'); 
-ProductsCategories.belongsTo(Product, { foreignKey: 'product_id' });
-ProductsCategories.belongsTo(Categories, { foreignKey: 'category_id' });
+productsCategories.removeAttribute('id'); 
+productsCategories.belongsTo(Product, { foreignKey: 'product_id' });
+productsCategories.belongsTo(Categories, { foreignKey: 'category_id' });
 
 module.exports = productsCategories;
