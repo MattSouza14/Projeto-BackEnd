@@ -44,7 +44,8 @@ const Product = sequelize.define('product', {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
-}, {
+}, 
+{
   tableName: 'products', 
   timestamps: false
 });

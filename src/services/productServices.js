@@ -6,7 +6,8 @@ const getProducts = async (req, res) => {
   
       const limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12);
       const pageValue = page && limitValue ? parseInt(page, 10) : 1;
-      const attributes = fields ? fields.split(',') : ['id','enabled','name',   'slug','stock', 'description', 'price', 'price_with_discount','category_ids', 'images', 'options'];
+      const attributes = fields ? fields.split(',') : ['id','enabled','productName', 'slug','stock', 
+        'description', 'price', 'price_with_discount','category_ids', 'images', 'options'];
       const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0;
   
     
@@ -35,10 +36,10 @@ const getProducts = async (req, res) => {
         filtro.options = { [Op.contains]: optionValues.split(',') };
       }
   
-      const total = await Products.count();
+      const total = await Product.count();
   
     
-      const products = await Products.findAll({
+      const products = await Product.findAll({
         where: filtro,
         limit: limitValue,
         offset: offset,
