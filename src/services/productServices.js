@@ -61,6 +61,87 @@ const getProducts = async (req, res) => {
     }
   };
 
+  const updateProduct = async (req, res) => {
+    const id = req.params.id; 
+
+    const {
+        enabled,
+        productName,
+        slug,
+        stock,
+        description,
+        price,
+        price_with_discount
+    } = req.body;
+
+    
+    if (Object.keys(req.body).length === 0) {
+        return res.status(204).end();
+    }
+
+    
+    if (!productName || stock === undefined || !description) {
+        return res.status(400).json({
+            statusCode: 400,
+            message: 'Dados da requisição incorretos: productName, stock, e description são obrigatórios.',
+        });
+    }
+
+    try {
+        
+        const product = await Product.findByPk(id);
+        if (!product) {
+            return res.status(404).json({
+                statusCode: 404,
+                message: 'Produto não encontrado.'
+            });
+        }
+
+        await product.update({
+            enabled,
+            productName,
+            slug,
+            stock,
+            description,
+            price,
+            price_with_discount
+        });
+
+        return res.status(200).json({
+            statusCode: 200,
+            message: 'Produto atualizado com sucesso!',
+            data: product
+        });
+
+    } catch (error) {
+      
+        return res.status(500).json({
+            statusCode: 500,
+            message: 'Erro ao atualizar o produto!',
+            detalhes: error.message
+        });
+    }
+};
+
+const deleteProduct = async (req, res) => {
+  const {id} = req.params.id
+  const product = await Product.destroy({where: {id:id}})
+  if (categoria){
+    return res.status(200).json({
+      statusCode: 200,
+      message: 'Produto Excluido com sucesso!'
+    })
+  }else {
+    res.status(404).json({
+    statusCode: 404,
+    message: 'Não foi possível realizar a operação no momento!'
+
+    })
+  }
+}
+
   module.exports ={
-    getProducts
+    getProducts,
+    updateProduct,
+    deleteProduct
   }

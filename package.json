@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-     "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests"
   },
   "keywords": [],
   "author": "",
@@ -29,5 +29,5 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.1.4"
-  } 
+  }
 }
