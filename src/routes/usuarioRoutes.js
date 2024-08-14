@@ -5,11 +5,11 @@ const router = express.Router();
 const tokenVerificado = require('../middleware/authMiddleware')
 const usuarioControler = require('../controllers/usuarioControler')
 
-router.get('/User/:id', usuarioControler.getUser)
-router.get('/ListUsers', usuarioControler.getUsers)
-router.post('/Users', usuarioControler.createUser)
-router.put('/Users/:id', usuarioControler.updateUser);
-router.delete('/Users/:id', usuarioControler.deleteUser)
+router.get('/user/:id', usuarioControler.getUser)
+router.get('/users', usuarioControler.getUsers)
+router.post('/users',tokenVerificado, usuarioControler.createUser)
+router.put('/users/:id',tokenVerificado, usuarioControler.updateUser);
+router.delete('/users/:id',tokenVerificado, usuarioControler.deleteUser)
 router.post('/user/token', usuarioControler.loginUser)
 
 

@@ -1,9 +1,8 @@
-const sequelize = require('../config/database')
+// models/productModel.js
 const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-
-
-const Product = sequelize.define('products', {
+const Product = sequelize.define('Product', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -33,7 +32,7 @@ const Product = sequelize.define('products', {
     allowNull: false,
   },
   description: {
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING(255),
     allowNull: false,
   },
   price: {
@@ -44,9 +43,8 @@ const Product = sequelize.define('products', {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
-}, 
-{
-  tableName: 'products', 
+}, {
+  tableName: 'products',
   timestamps: false
 });
 
