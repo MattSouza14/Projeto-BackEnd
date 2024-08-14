@@ -6,61 +6,59 @@ const productsCategories = require('../models/productsCategories.js');
 
 
 const getProducts = async (req, res) => {
-    try {
-      const { limit, page, fields, match, category_ids,  priceRange, 'option[45]': optionValues } = req.query;
-  
+  try {
+      const { limit, page, fields, match, category_ids, priceRange, 'option[45]': optionValues } = req.query;
+
       const limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12);
       const pageValue = page && limitValue ? parseInt(page, 10) : 1;
-      const attributes = fields ? fields.split(',') : ['id','enabled','productName', 'slug','stock', 
-        'description', 'price', 'price_with_discount','category_ids', 'images', 'options'];
+      const attributes = fields ? fields.split(',') : ['id', 'enabled', 'productName', 'slug', 'stock', 'description', 'price', 'price_with_discount'];
       const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0;
-  
-    
+
       let filtro = {};
       if (match) {
-        filtro = {
-          [Op.or]: [
-            { name: { [Op.iLike]: `%${match}%` } },
-            { description: { [Op.iLike]: `%${match}%` } }
-          ]
-        };
+          filtro = {
+              [Op.or]: [
+                  { productName: { [Op.iLike]: `%${match}%` } },
+                  { description: { [Op.iLike]: `%${match}%` } }
+              ]
+          };
       }
-      
-      if (category_ids) {
-        const categories = category_ids.split(',').map(Number);
-        filtro.category_ids = { [Op.overlap]: categories };
-      }
-  
-      if (priceRange) {
-        const [minPrice, maxPrice] = priceRange.split('-').map(Number);
-        filtro.price = { [Op.between]: [minPrice, maxPrice] };
-      }
-  
-      if (optionValues) {
-       
-        filtro.options = { [Op.contains]: optionValues.split(',') };
-      }
-  
-      const total = await Product.count();
-  
-    
-      const products = await Product.findAll({
-        where: filtro,
-        limit: limitValue,
-        offset: offset,
-        attributes: attributes
 
-        
+      if (category_ids) {
+          const categories = category_ids.split(',').map(Number);
+          filtro.category_ids = { [Op.overlap]: categories };
+      }
+
+      if (priceRange) {
+          const [minPrice, maxPrice] = priceRange.split('-').map(Number);
+          filtro.price = { [Op.between]: [minPrice, maxPrice] };
+      }
+
+      if (optionValues) {
+          filtro.options = { [Op.contains]: optionValues.split(',') };
+      }
+
+      const total = await Product.count();
+
+      const products = await Product.findAll({
+          where: filtro,
+          limit: limitValue,
+          offset: offset,
+          attributes: attributes,
+          include: {
+              model: Image,
+              attributes: ['id', 'pathProduct']
+          }
       });
-  
+
       res.status(200).json({
-        data: products,
-        total: total,
-        limit: limitValue,
-        page: pageValue
+          data: products,
+          total: total,
+          limit: limitValue,
+          page: pageValue
       });
-  
-    } catch (error) {
+
+  } catch (error) {
       console.error('Erro ao obter produtos:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
@@ -177,41 +175,10 @@ const createProduct = async (req, res) => {
   //     })
   //   }
   // }
- 
-
-
-
-  const deleteProduct = async (req, res) => {
-    try {
-        
-        const id = Number(req.params.id)
-       
-       await productsCategories.destroy ({ where: {product_id: id}})  
-       await Options.destroy ({ where: {product_id: id}})  
-       await Categories.destroy ({ where: {product_id: id}})  
-       await Image.destroy ({ where: {product_id: id}})  
-      const produto = await Product.destroy({ where: {id:id}})
-      console.log('produto cheguei aq')
-      console.log(produto)
-            if(produto){
-                res.status(204).json('Produto deletado :)')
-            }else{
-                res.status(401).send('Produto não encontrado ou não existe')
-            }
-        
-        
-        }catch(erro) {
-        console.error('404 - Erro ao buscar produto:', erro)
-      }
-  }
-
 
   module.exports ={
     getProducts,
-    createProduct,
-    deleteProduct
+    createProduct
     // createProducts,
     // deleteProducts
   }
-
-

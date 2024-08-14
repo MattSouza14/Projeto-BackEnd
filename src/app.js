@@ -18,7 +18,7 @@ app.use('/v1', usuarioRoutes);
 
 app.use('/v1/category', categoryRoutes);
 
-app.use('/product', productRoutes);
+app.use('/v1', productRoutes);
 
 
 module.exports = app;
