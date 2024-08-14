@@ -4,7 +4,7 @@ const productController = require('../controllers/productControllers');
 
 
 router.get('/product', productController.getProduct);
-
+router.delete('/:id', productController.deleteProduct)
 
 
 

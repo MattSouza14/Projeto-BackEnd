@@ -2,6 +2,8 @@ const Product = require('../models/productModel.js');
 const Categories = require('../models/productsCategories.js');
 const Image = require('../models/imgsProducts.js');
 const Options = require ('../models/optionModel.js');
+const productsCategories = require('../models/productsCategories.js');
+
 
 const getProducts = async (req, res) => {
     try {
@@ -175,10 +177,39 @@ const createProduct = async (req, res) => {
   //     })
   //   }
   // }
+ 
+
+
+
+  const deleteProduct = async (req, res) => {
+    try {
+        
+        const id = Number(req.params.id)
+       
+       await productsCategories.destroy ({ where: {product_id: id}})  
+       await Options.destroy ({ where: {product_id: id}})  
+       await Categories.destroy ({ where: {product_id: id}})  
+       await Image.destroy ({ where: {product_id: id}})  
+      const produto = await Product.destroy({ where: {id:id}})
+      console.log('produto cheguei aq')
+      console.log(produto)
+            if(produto){
+                res.status(204).json('Produto deletado :)')
+            }else{
+                res.status(401).send('Produto não encontrado ou não existe')
+            }
+        
+        
+        }catch(erro) {
+        console.error('404 - Erro ao buscar produto:', erro)
+      }
+  }
+
 
   module.exports ={
     getProducts,
-    createProduct
+    createProduct,
+    deleteProduct
     // createProducts,
     // deleteProducts
   }

@@ -7,7 +7,7 @@ const createProduct = (req, res) => {
     productServices.createProducts(req, res)
 }
 const deleteProduct = (req, res) => {
-    productServices.deleteProducts(req, res)
+    productServices.deleteProduct(req, res)
 }
   
 
