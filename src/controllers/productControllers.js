@@ -3,19 +3,18 @@ const productServices = require('../services/productServices')
 const getProduct = async (req, res)=>{
     productServices.getProducts(req, res)
 }   
-// const createProduct = async (req,res)=>{
-//     productServices.createProduct(req,res)
-// }
-// const updateProduct = async (req, res)=>{
-//     productServices.updateProduct(req,res)
-// }
-// const deleteProduct = async (req,res)=>{
-//     productServices.deleteProduct(req,res)
-// }
+const createProduct = (req, res) => {
+    productServices.createProducts(req, res)
+}
+const deleteProduct = (req, res) => {
+    productServices.deleteProducts(req, res)
+}
+  
+
 
 module.exports = {
-    getProduct
-    // createProduct,
-    // updateProduct,
-    // deleteProduct,
+    getProduct,
+    createProduct,
+    deleteProduct
+  
 }   
