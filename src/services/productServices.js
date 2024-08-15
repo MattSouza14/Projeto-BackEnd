@@ -7,62 +7,51 @@ const productsCategories = require('../models/productsCategories.js');
 
 const getProducts = async (req, res) => {
   try {
-      const { limit, page, fields, match, category_ids, priceRange, 'option[45]': optionValues } = req.query;
+    // Extraia dados do corpo da requisição
+    const { name, price, description, stock, categorie_id } = req.body;
 
-      const limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12);
-      const pageValue = page && limitValue ? parseInt(page, 10) : 1;
-      const attributes = fields ? fields.split(',') : ['id', 'enabled', 'productName', 'slug', 'stock', 'description', 'price', 'price_with_discount'];
-      const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0;
+    // Valide os campos do produto (essa validação deve ser feita com middleware separado)
+    if (!name || !price || typeof stock !== 'number' || typeof categorie_id !== 'number') {
+      return res.status(400).json({ error: 'Missing or invalid product fields' });
+    }
 
-      let filtro = {};
-      if (match) {
-          filtro = {
-              [Op.or]: [
-                  { productName: { [Op.iLike]: `%${match}%` } },
-                  { description: { [Op.iLike]: `%${match}%` } }
-              ]
-          };
+    // Configurações de paginação e filtros (exemplo de configuração, ajuste conforme necessário)
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const offset = (page - 1) * limit;
+    const filtro = {}; // Defina seus filtros de busca conforme necessário
+    const attributes = ['id', 'name', 'price', 'description', 'stock', 'categorie_id']; // Defina os atributos que deseja retornar
+    const limitValue = limit;
+    const pageValue = page;
+
+    // Contar o total de produtos
+    const total = await Product.count({ where: filtro });
+
+    // Buscar produtos com os filtros, paginação e inclusão de imagens
+    const products = await Product.findAll({
+      where: filtro,
+      limit: limitValue,
+      offset: offset,
+      attributes: attributes,
+      include: {
+        model: Image,
+        attributes: ['id', 'pathProduct']
       }
+    });
 
-      if (category_ids) {
-          const categories = category_ids.split(',').map(Number);
-          filtro.category_ids = { [Op.overlap]: categories };
-      }
-
-      if (priceRange) {
-          const [minPrice, maxPrice] = priceRange.split('-').map(Number);
-          filtro.price = { [Op.between]: [minPrice, maxPrice] };
-      }
-
-      if (optionValues) {
-          filtro.options = { [Op.contains]: optionValues.split(',') };
-      }
-
-      const total = await Product.count();
-
-      const products = await Product.findAll({
-          where: filtro,
-          limit: limitValue,
-          offset: offset,
-          attributes: attributes,
-          include: {
-              model: Image,
-              attributes: ['id', 'pathProduct']
-          }
-      });
-
-      res.status(200).json({
-          data: products,
-          total: total,
-          limit: limitValue,
-          page: pageValue
-      });
+    // Responder com os dados dos produtos e informações de paginação
+    res.status(200).json({
+      data: products,
+      total: total,
+      limit: limitValue,
+      page: pageValue
+    });
 
   } catch (error) {
-      console.error('Erro ao obter produtos:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-  };
+    console.error('Erro ao obter produtos:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+};
 
 
 
@@ -178,7 +167,8 @@ const createProduct = async (req, res) => {
 
   module.exports ={
     getProducts,
-    createProduct
+    createProduct,
+    verificarProduto
     // createProducts,
     // deleteProducts
   }
