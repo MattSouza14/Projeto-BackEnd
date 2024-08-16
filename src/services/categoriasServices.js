@@ -1,6 +1,6 @@
 // falta a autenticação do token (401)
 
-const Categories = require('../models/categoriesModal');
+const Categories = require('../models/categoriesModel');
 
 const getCategories = async (req, res) => {
   try {

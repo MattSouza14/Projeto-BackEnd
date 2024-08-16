@@ -27,7 +27,7 @@ path: {
     allowNull: false,
 },
 }, {
-  tableName: 'product_images', // Certifique-se de que o nome da tabela está correto
+  tableName: 'product_images',
   timestamps: false
 });
 // Image.belongsTo(Product, { as: 'products', foreignKey: 'product_id' });
