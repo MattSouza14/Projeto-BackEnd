@@ -71,7 +71,7 @@ const getProducts = async (req, res) => {
 
 
 const createProduct = async (req, res) => {
-  const {enabled,name,slug,stock,description,price,price_with_discount,category_ids,images,options } = req.body;
+  const {id,enabled,name,slug,stock,description,price,price_with_discount,category_ids,images,options } = req.body;
 
   try {
   
