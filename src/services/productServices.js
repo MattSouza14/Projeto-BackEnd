@@ -48,8 +48,8 @@ const getProducts = async (req, res) => {
       attributes: attributes,
       include: [{
         model: Image,
-        as: 'product_images', // Alias usado na associação
-        attributes: ['id', 'path'] // Ajuste conforme necessário
+        as: 'product_images', 
+        attributes: ['id', 'path'] 
       }]
     });
 
@@ -61,10 +61,13 @@ const getProducts = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Erro ao obter produtos:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Erro ao obter produtos:', error)
+    res.status(500).json({ error: 'Erro interno do servidor' })
   }
-};
+}
+    
+
+
 
 
 const createProduct = async (req, res) => {
