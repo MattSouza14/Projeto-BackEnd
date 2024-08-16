@@ -10,7 +10,9 @@ const productRoutes = require('./routes/productRoutes')
 app.use(express.json())
 // Uso das rotas
 app.get('/', (request, response) => {
-    response.send('olha minha api que legal');
+
+    response.json({ message: 'olha minha api que legal'});
+
 });
 
 //usando as rotas definidas no arquivo usuarioRoutes
