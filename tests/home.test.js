@@ -5,6 +5,7 @@ test('deve retornar olha minha api que legal', async () => {
     const response = await request(app).get('/');
 
     expect(response.status).toBe(200); // Verifica o status da resposta
+    console.log(response.body)
     expect(response.body).toEqual({
         message: 'olha minha api que legal'
       
