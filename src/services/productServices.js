@@ -161,24 +161,7 @@ const createProduct = async (req, res) => {
   // }
 
 
-  // const deleteProducts = async (req, res) => {
-  //   const { id } = req.params
-  //   const produtos = await products.destroy({ where: { id: id } })
-    
-  //   if (produtos) {
-  //     return res.status(200).json({
-  //     statusCode: 200,
-  //     message: 'Deleção bem sucedida'
-  //     })
-  //   } else {
-  //     res.status(404).json({
-  //     statusCode: 404,
-  //     message: 'recurso solicitado não existe'
-  //     })
-  //   }
-  // }
  
-
 
 
   const deleteProduct = async (req, res) => {

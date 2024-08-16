@@ -28,7 +28,7 @@ Este é um projeto de Back-End desenvolvido pelos alunos do programa Geração T
 
 ### Diagrama do Banco de Dados:
 
-![diagrama do banco de dados](src/assets/diagrama_bd.png)
+![diagrama do banco de dados](src/assets/diagrama.png)
 
 
 
@@ -51,4 +51,13 @@ project-root/
 └── package.json
 ```
 ## Passo a passo:
+### Caso faça o clone do projeto:
+- Instale as dependencias:
+- ```npm install express```: Express
+- ```npm install dotenv```: Dotenv
+- ```npm install express```: Nodemon
+- ```npm install bcrypt```: Bcrypt
+- ```npm install jsonwebtoken```: JWT
+
+### Iniciando o servidor
 - ```node --env-file=../.env server.js```: Iniciando o servidor
