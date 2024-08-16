@@ -13,20 +13,6 @@ const sequelize = new Sequelize(process.env.DB_NAME,
 	  dialect: 'mysql',
 	}
 );
-console.log(process.env.DB_HOST)
-
-
-// const sequelize = new Sequelize(
-//    'railway',
-//    'root',
-//    'DdcFmollntQRrIVsPPmeNIvqasmEpMYt', 
-// {
-//   host: 'viaduct.proxy.rlwy.net',
-//   port: '12970',
-//   dialect: 'mysql',
-  
-// }
-// );
 
 sequelize.authenticate()
   .then(() => {

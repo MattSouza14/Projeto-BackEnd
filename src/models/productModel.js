@@ -1,51 +1,54 @@
 // models/productModel.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Image = require('../models/ImgsProducts')
 
-const Product = sequelize.define('Product', {
+
+
+const Product = sequelize.define('products', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
-    allowNull: false,
-  },
-  enabled: {
+},
+enabled: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
     defaultValue: false,
-  },
-  productName: {
-    type: DataTypes.STRING(100),
+},
+name: {
+    type: DataTypes.STRING,
     allowNull: false,
-  },
-  slug: {
-    type: DataTypes.STRING(100),
+},
+slug: {
+    type: DataTypes.STRING,
     allowNull: false,
-  },
-  use_in_menu: {
+},
+use_in_menu: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
     defaultValue: false,
-  },
-  stock: {
+},
+stock: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  description: {
-    type: DataTypes.STRING(255),
-    allowNull: false,
-  },
-  price: {
+    defaultValue: 0,
+},
+description: {
+    type: DataTypes.STRING,
+},
+price: {
     type: DataTypes.FLOAT,
     allowNull: false,
-  },
-  price_with_discount: {
+},
+price_with_discount: {
     type: DataTypes.FLOAT,
     allowNull: false,
-  },
-}, {
+},
+}, 
+{
   tableName: 'products',
   timestamps: false
-});
+})
+
+Product.hasMany(Image, { as: 'product_images', foreignKey: 'product_id' });
+
 
 module.exports = Product;

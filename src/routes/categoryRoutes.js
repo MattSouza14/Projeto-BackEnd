@@ -6,7 +6,7 @@ const categoriesController = require('../controllers/categoriesController');
 // Rota para obter todos os categories
 router.get('/search', categoriesController.getCategories);
 router.get('/:id', categoriesController.getCategory)
-router.post('/',tokenVerificado, categoriesController.createCategory)
+router.post('/create',tokenVerificado, categoriesController.createCategory)
 router.put('/:id',tokenVerificado, categoriesController.updateCategory)
 router.delete('/:id',tokenVerificado, categoriesController.deleteCategory)
 

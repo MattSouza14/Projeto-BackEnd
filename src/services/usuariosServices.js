@@ -65,8 +65,8 @@ const getUsuario = async (req, res) => {
                 let objSucess ={
                     statusCode: 200,
                     id: usuario.id,
-                    firstname: usuario.userName,
-                    surname:usuario.surName,
+                    firstname: usuario.firstname,
+                    surname:usuario.surname,
                     email: usuario.email
                 }
                 res.status(200).json(objSucess)
@@ -81,25 +81,23 @@ const getUsuario = async (req, res) => {
   }
 
 const createUsuario = async (req, res) => {
-    const { userName, surName, userAtivo, email, password, dataCadastro } = req.body;
+    const { firstname, surname, email, password } = req.body;
    
     const saltRounds = 10;
     try {
        let senhaCriptografada = await bcrypt.hash(password, saltRounds);
         
         const newUser = await Usuario.create({
-            userName: userName, 
-            surName: surName, 
-            userAtivo: userAtivo,
+            firstname: firstname, 
+            surname: surname, 
             email: email, 
             password: senhaCriptografada,
-            dataCadastro: dataCadastro,
         });
 
         let createSucess = {
             statusCode: 201,
-            firstname: newUser.userName,
-            surname: newUser.surName,
+            firstname: newUser.firstname,
+            surname: newUser.surname,
             email: newUser.email,
             password: newUser.password,
         };
@@ -117,7 +115,7 @@ const createUsuario = async (req, res) => {
 
 const updateUsuario = async (req, res) => {
     const id  = req.params.id;
-    const { userName, surName, userAtivo, email, password, dataCadastro } = req.body;
+    const { firstname, surname, email, password } = req.body;
 
     try {
         const usuario = await Usuario.findByPk(id);
@@ -129,18 +127,16 @@ const updateUsuario = async (req, res) => {
                senhaCriptografada = await bcrypt.hash(password, saltRounds);
             }
             await usuario.update({
-                userName: userName,  
-                surName: surName,
-                userAtivo: userAtivo, 
+                firstname: firstname,  
+                surname: surname,
                 email: email,
                 password: senhaCriptografada, 
-                dataCadastro: dataCadastro  
             });
             let updateSuccess ={
                     statusCode: 200,
                     message: 'Usuário atualizado com sucesso',
-                    firstname: usuario.userName,
-                    surname: usuario.surName,
+                    firstname: usuario.firstname,
+                    surname: usuario.surname,
                     email: usuario.email,
             }
             res.status(200).json(updateSuccess);
@@ -168,8 +164,8 @@ const deleteUsuario = async (req, res) => {
                 let objSucess ={
                     statusCode: 200,
                     id: usuario.id,
-                    firstname: usuario.userName,
-                    surname:usuario.surName,
+                    firstname: usuario.firstname,
+                    surname:usuario.surname,
                     email: usuario.email
                 }
                 res.status(204).json(objSucess)

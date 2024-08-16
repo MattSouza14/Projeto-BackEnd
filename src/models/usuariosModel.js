@@ -7,22 +7,14 @@ const Usuario = sequelize.define('users', {
       primaryKey: true,
       allowNull: false
     },
-    userName: {
+    firstname: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    surName:{
+    surname:{
       type: DataTypes.STRING,
       allowNull: false,
   
-    },
-    userAtivo: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false
-    },
-    dataCadastro: {
-      type: DataTypes.DATE,
-      allowNull: false
     },
     email: {
       type: DataTypes.STRING,
@@ -33,16 +25,20 @@ const Usuario = sequelize.define('users', {
       type: DataTypes.STRING,
       allowNull: false
     },
-
-    createdAt: {
+    created_at: {
       type: DataTypes.BOOLEAN,
       timestamps: true
     },
-    updatedAt: {
+    updated_at: {
       type: DataTypes.BOOLEAN,
       timestamps: true
     }
-    
-  });
+  },
+  {
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  })
+
   
   module.exports = Usuario

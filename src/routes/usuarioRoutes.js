@@ -13,6 +13,4 @@ router.delete('/users/:id',tokenVerificado, usuarioControler.deleteUser)
 router.post('/user/token', usuarioControler.loginUser)
 
 
-
-
 module.exports = router

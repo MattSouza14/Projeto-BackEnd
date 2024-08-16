@@ -4,43 +4,46 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Product = require('./productModel');
 
-const Options = sequelize.define('option_products', {
+const Options = sequelize.define('product_options', {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-      allowNull: false,
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
     },
-    
     product_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         references: {
             model: Product,
-            key: 'id'
-        }
+            key: 'id',
+        },
+        allowNull: false,
     },
     title: {
-        type: DataTypes.STRING(150),
-        allowNull: false
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    shape:{
-        type:DataTypes.ENUM('square', 'circle')
+    shape: {
+        type: DataTypes.ENUM('square', 'circle'),
+        defaultValue: 'square',
     },
-    type:{
-        type:DataTypes.ENUM('text', 'color')
-
+    radius: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
     },
-    values:{
-        type: DataTypes.STRING(150),
-        allowNull: false
-    }
-}, 
+    type: {
+        type: DataTypes.ENUM('text', 'color'),
+        defaultValue: 'text',
+    },
+    values: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+},
 {
-    tableName: 'option_products', 
+    tableName: 'product_options', 
     timestamps: false
 });
 
-Options.belongsTo(Product, { foreignKey: 'product_id' });
+// Options.belongsTo(Product, { foreignKey: 'product_id' });
 
 module.exports = Options;
