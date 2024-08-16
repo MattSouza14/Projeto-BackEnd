@@ -12,7 +12,7 @@ const getProducts = async (req, res) => {
 
     const limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12);
     const pageValue = page && limitValue ? parseInt(page, 10) : 1;
-    const attributes = fields ? fields.split(',') : ['id', 'enabled', 'name', 'slug', 'stock', 'description', 'price', 'price_with_discount'];
+    const attributes = fields ? fields.split(',') : ['id', 'enabled', 'name', 'slug', 'stock', 'description', 'price', 'price_with_discount', 'category_ids', 'product_images'];
     const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0;
 
     let filtro = {};
@@ -39,32 +39,57 @@ const getProducts = async (req, res) => {
       filtro.options = { [Op.contains]: optionValues.split(',') };
     }
 
-    const total = await Product.count();
+    const total = await Product.count({ where: filtro });
 
     const products = await Product.findAll({
       where: filtro,
       limit: limitValue,
       offset: offset,
-      attributes: attributes,
-      include: [{
-        model: Image,
-        as: 'product_images', 
-        attributes: ['id', 'path'] 
-      }]
+      attributes: attributes, // Define quais atributos buscar na tabela Product
+      include: [
+        {
+          model: Image,
+          as: 'product_images',
+          attributes: ['id', 'path']
+        },
+        {
+          model: productsCategories,
+          as: 'categories_product',
+          attributes: ['category_id']
+        }
+      ]
+    });
+
+    const formattedProducts = products.map(product => {
+      let formattedProduct = {};
+
+      // Inclua apenas os atributos desejados
+      attributes.forEach(attr => {
+        if (attr === 'category_ids') {
+          formattedProduct.category_ids = product.categories_product.map(category => category.category_id);
+        } else if (attr === 'product_images') {
+          formattedProduct.product_images = product.product_images;
+        } else {
+          formattedProduct[attr] = product[attr];
+        }
+      });
+
+      return formattedProduct;
     });
 
     res.status(200).json({
-      data: products,
+      data: formattedProducts,
       total: total,
       limit: limitValue,
       page: pageValue
     });
 
   } catch (error) {
-    console.error('Erro ao obter produtos:', error)
-    res.status(500).json({ error: 'Erro interno do servidor' })
+    console.error('Erro ao obter produtos:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 }
+
     
 
 

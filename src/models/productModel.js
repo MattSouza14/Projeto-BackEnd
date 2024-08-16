@@ -1,7 +1,8 @@
 // models/productModel.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const Image = require('../models/ImgsProducts')
+const Image = require('../models/ImgsProducts');
+const productsCategories = require('./productsCategories')
 
 
 
@@ -49,6 +50,7 @@ price_with_discount: {
 })
 
 Product.hasMany(Image, { as: 'product_images', foreignKey: 'product_id' });
+Product.hasMany(productsCategories, { as: 'categories_product', foreignKey: 'product_id' })
 
 
 module.exports = Product;
