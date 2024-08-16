@@ -1,8 +1,7 @@
-
 const request = require('supertest');
 const express = require('express');
 const bodyParser = require('body-parser');
-const jwt=require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Usuario = require('../src/models/usuariosModel');
 const { getUser, getUsers, createUser, updateUser, deleteUser, loginUser } = require('../src/controllers/usuarioControler');
@@ -12,21 +11,22 @@ const app = express();
 app.use(bodyParser.json());
 
 // Defina as rotas para o aplicativo de teste
-app.get('/user/:id', getUser)
-app.get('/users', getUsers)
-app.post('/users',createUser)
-app.put('/users/:id',updateUser);
-app.delete('/users/:id',deleteUser)
-app.post('/user/token', loginUser)
+app.get('/user/:id', getUser);
+app.get('/users', getUsers);
+app.post('/users', createUser);
+app.put('/users/:id', updateUser);
+app.delete('/users/:id', deleteUser);
+app.post('/user/token', loginUser);
 
 describe('Testes do controlador de usuários', () => {
-    let token;
+    let testUserId;
 
     beforeAll(async () => {
         // Crie um usuário de teste para usar em alguns dos testes
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash('senha123', saltRounds);
-        await Usuario.create({ firstname: 'Teste', surname: 'User', email: 'teste@user.com', password: hashedPassword });
+        const user = await Usuario.create({ firstname: 'Teste', surname: 'User', email: 'teste@user.com', password: hashedPassword });
+        testUserId = user.id;
     });
 
     afterAll(async () => {
@@ -37,11 +37,11 @@ describe('Testes do controlador de usuários', () => {
     test('Deve fazer login e retornar um token', async () => {
         const response = await request(app)
             .post('/user/token')
-            .send({ email: "tiakathia1@email.com", password: "cleitinho1" });
+            .send({ email: "teste@user.com", password: "senha123" });
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('token');
-        token = response.body.token;
+        expect(typeof response.body.token).toBe('string');
     });
 
     test('Deve criar um novo usuário', async () => {
@@ -50,7 +50,8 @@ describe('Testes do controlador de usuários', () => {
             .send({ firstname: 'Novo', surname: 'Usuario', email: 'novo@usuario.com', password: 'senha123' });
 
         expect(response.status).toBe(201);
-        expect(response.body).toHaveProperty('firstname', 'surname' );
+        expect(response.body).toHaveProperty('firstname', 'Novo');
+        expect(response.body).toHaveProperty('surname', 'Usuario');
     });
 
     test('Deve listar todos os usuários', async () => {
@@ -60,25 +61,28 @@ describe('Testes do controlador de usuários', () => {
     });
 
     test('Deve retornar um usuário específico', async () => {
-        const user = await Usuario.findOne({ where: { id: '1' } });
-        const response = await request(app).get(`/user/:id/`);
+        const response = await request(app).get(`/user/${testUserId}`);
         expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('firstname', 'surname');
+        expect(response.body).toHaveProperty('firstname');
+        expect(response.body).toHaveProperty('surname');
     });
 
     test('Deve atualizar um usuário existente', async () => {
-        const user = await Usuario.findOne({ where: { id: '1' } });
         const response = await request(app)
-            .put(`/users/:id`)
-            .send({ firstname: 'TiaKathia1', surname: 'tiaaaa', email: 'tiakathia1@email.com', password: 'cleitinho1' });
+            .put(`/users/${testUserId}`)
+            .send({ firstname: 'Atualizado', surname: 'Atualizado', email: 'atualizado@user.com', password: 'novaSenha' });
 
-        expect(response.status).toEqual(200);
+        expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('firstname', 'Atualizado');
+        expect(response.body).toHaveProperty('surname', 'Atualizado');
     });
 
     test('Deve excluir um usuário existente', async () => {
-        const user = await Usuario.findOne({ where: { id: '2' } });
-        const response = await request(app).delete(`/users/:id`);
+        const response = await request(app).delete(`/users/${testUserId}`);
         expect(response.status).toBe(204);
+        
+        // Verifique se o usuário foi realmente excluído
+        const user = await Usuario.findByPk(testUserId);
+        expect(user).toBeNull();
     });
 });
