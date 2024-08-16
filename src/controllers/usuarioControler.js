@@ -3,22 +3,22 @@ const userServices = require('../services/usuariosServices')
 
 
 const getUsers = async(req, res)=>{
-    userServices.getAllUsuarios(req, res)
+     return userServices.getAllUsuarios(req, res)
 }
 const getUser = async (req, res)=>{
-    userServices.getUsuario(req, res)
+   return  userServices.getUsuario(req, res)
 }   
 const createUser = async (req,res)=>{
-    userServices.createUsuario(req,res)
+    return userServices.createUsuario(req,res)
 }
 const updateUser = async (req, res)=>{
-    userServices.updateUsuario(req,res)
+     return userServices.updateUsuario(req,res)
 }
 const deleteUser = async (req,res)=>{
-    userServices.deleteUsuario(req,res)
+    return userServices.deleteUsuario(req,res)
 }
 const loginUser = async (req, res)=>{
-    userServices.login(req, res)
+     return userServices.login(req, res)
 }
 
 module.exports = {
