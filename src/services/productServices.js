@@ -6,7 +6,8 @@ const Options = require ('../models/optionModel.js');
 const productsCategories = require('../models/productsCategories.js');
 
 
-const getProducts = async (req, res) => {
+
+const getProduct = async (req, res) => {
   try {
     const { limit, page, fields, match, category_ids, priceRange, 'option[45]': optionValues } = req.query;
 
@@ -90,16 +91,26 @@ const getProducts = async (req, res) => {
   }
 }
 
-    
-
-
-
 
 const createProduct = async (req, res) => {
-  const {enabled,name,slug,stock,description,price,price_with_discount,category_ids,images,options } = req.body;
+  const { 
+    enabled,
+    name,
+    slug,
+    stock,
+    description,
+    price,
+    price_with_discount,
+    category_ids,
+    images,
+    options 
+  } = req.body;
 
   try {
-  
+    if (!name || !slug || !price) {
+      return res.status(400).json({ error: 'Nome, slug e preço são obrigatórios' });
+    }
+
     const newProduct = await Product.create({
       enabled,
       name,
@@ -139,57 +150,13 @@ const createProduct = async (req, res) => {
       }));
     }
 
-    return newProduct;
+    res.status(201).json(newProduct);
 
   } catch (error) {
-    throw new Error(`Erro ao criar o produto: ${error.message}`);
+    console.error('Erro ao criar o produto:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
-
-
-
-
-  // const createProducts = async (req, res) => {
-
-  //   const { enabled,name,slug,stock,description,price,price_with_discount} = req.body;
-    
-  //   try {
-        
-  //     const newProduct = await products.create({
-  //       enabled:enabled,
-  //       name: name,
-  //       slug: slug,
-  //       stock:stock,
-  //       description:description,
-  //       price:price,
-  //       price_with_discount:price_with_discount
-  //     });
-  
-  //     let createSucess = {
-  //       statusCode: 201,
-  //       name: newProduct.name,
-  //       slug: newProduct.slug,
-  //       stock:newProduct.stock,
-  //       description:newProduct.description,
-  //       price:newProduct.price,
-  //       price_with_discount:newProduct.price_with_discount
-        
-  //     };
-  
-  //     res.status(201).json(createSucess);
-  
-  //   } catch (erro) {
-  //     console.log(erro);
-  //     res.status(400).json({
-  //       statusCode: 400,
-  //       message: 'dados da requisição incorretos'
-  //     });
-  //   }
-  // }
-
-
- 
-
 
   const deleteProduct = async (req, res) => {
     try {
@@ -216,8 +183,8 @@ const createProduct = async (req, res) => {
   }
 
   module.exports ={
-    getProducts,
+    getProduct,
     createProduct,
-    // createProducts,
-    deleteProduct
+    deleteProduct,
+    getProduct
   }
