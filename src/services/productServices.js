@@ -14,8 +14,8 @@ const getProducts = async (req, res) => {
     if (match) {
       filtro = {
         [Op.or]: [
-          { name: { [Op.iLike]: `%${match}%` } },
-          { description: { [Op.iLike]: `%${match}%` } }
+          { name: { [Op.like]: `%${match}%` } },
+          { description: { [Op.like]: `%${match}%` } }
         ]
       };
     }
@@ -100,6 +100,7 @@ const getProducts = async (req, res) => {
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
+
 
 
 const createProduct = async (req, res) => {
