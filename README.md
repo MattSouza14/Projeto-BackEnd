@@ -1,7 +1,9 @@
 # Projeto-BackEnd
 
-### Sobre o Projeto:
-Este é um projeto de Back-End desenvolvido pelos alunos do programa Geração Tech e tem como objetivo demonstrar o uso das habilidades adquiridas em sala de aula. A realização deste trabalho se deve ao bom desempenho em equipe e à valiosa tutoria da professora [Káthia Rocha](https://github.com/techcomkathia) e [Nayara Calenzo](#) que nos acompanhou e deu suporte nesta importante tarefa.
+### Introdução:
+Esta API foi desenvolvida pelos alunos do programa Geração Tech e tem como objetivo demonstrar o uso das habilidades adquiridas em sala de aula. A API foi baseada na documentação disponibilizada pela [Digital College](https://github.com/digitalcollegebr). Com esta API, é possível realizar pesquisas de dados cadastrados nas tabelas criadas, bem como inserir, atualizar e deletar dados. Este trabalho é resultado do bom desempenho em equipe e da valiosa tutoria da professora [Káthia Rocha](https://github.com/techcomkathia) e de [Nayara Calenzo](#), que nos acompanhou e deu suporte nesta importante tarefa.
+
+
 
 ### Equipe:
 
@@ -10,6 +12,9 @@ Este é um projeto de Back-End desenvolvido pelos alunos do programa Geração T
 - **Pedro Matias** - [GitHub](https://github.com/PedroMatias1998)
 - **Vinicius Alves** - [GitHub](https://github.com/Vicore123)
 - **Mateus Souza** - [GitHub](https://github.com/MattSouza14)
+
+
+## Sobre a API:
 
 ###
 <details>
@@ -25,15 +30,44 @@ Este é um projeto de Back-End desenvolvido pelos alunos do programa Geração T
 - *JEST* - testar e manter a qualidade do código
 </details>
 
+<details>
+ <summary><strong>End Points: Usuários</strong></summary><br>
 
-### Diagrama do Banco de Dados:
+- *End Point* - exemplo que faz
+  
+</details>
+
+<details>
+ <summary><strong>End Points: Categorias</strong></summary><br>
+
+- *End Point* - exemplo que faz
+  
+</details>
+<details>
+ <summary><strong>End Points: Produtos</strong></summary><br>
+
+- *End Point* - exemplo que faz
+  
+</details>
+
+<details>
+ <summary><strong>Instruções de aplicação e uso da API</strong></summary><br>
+
+```
+
+```
+  
+</details>
+
+
+## Diagrama do Banco de Dados:
 
 ![diagrama do banco de dados](src/assets/diagrama.png)
 
 
 
 
-### Estrutura de diretório:
+# Estrutura de diretório:
 ```
 project-root/
 ├── src/
