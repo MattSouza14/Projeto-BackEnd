@@ -5,44 +5,36 @@ const getProducts = async (req, res) => {
   try {
     const { limit, page, fields, match, category_ids, priceRange, 'option[45]': optionValues } = req.query;
 
+    // Set default values and parse inputs
     const limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12);
     const pageValue = page && limitValue ? parseInt(page, 10) : 1;
     const attributes = fields ? fields.split(',') : ['id', 'enabled', 'name', 'slug', 'stock', 'description', 'price', 'price_with_discount'];
     const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0;
 
-    let filtro = {};
+    // Build filter
+    const filtro = {};
     if (match) {
-      filtro = {
-        [Op.or]: [
-          { name: { [Op.like]: `%${match}%` } },
-          { description: { [Op.like]: `%${match}%` } }
-        ]
-      };
+      filtro[Op.or] = [
+        { name: { [Op.like]: `%${match}%` } },
+        { description: { [Op.like]: `%${match}%` } }
+      ];
     }
-
     if (category_ids) {
       const categories = category_ids.split(',').map(Number);
       filtro['$categories.id$'] = { [Op.in]: categories };
     }
-
     if (priceRange) {
       const [minPrice, maxPrice] = priceRange.split('-').map(Number);
       filtro.price = { [Op.between]: [minPrice, maxPrice] };
     }
-
     if (optionValues) {
       filtro.options = { [Op.contains]: optionValues.split(',') };
     }
 
+    // Fetch total count and products
     const total = await Product.count({
       where: filtro,
-      include: [
-        {
-          model: Category,
-          as: 'categories',
-          attributes: []
-        }
-      ]
+      include: [{ model: Category, as: 'categories', attributes: [] }]
     });
 
     const products = await Product.findAll({
@@ -51,53 +43,55 @@ const getProducts = async (req, res) => {
       offset: offset,
       attributes: attributes,
       include: [
-        {
-          model: Image,
-          as: 'product_images',
-          attributes: ['id', 'path']
-        },
-        {
-          model: Category,
-          through: { attributes: [] },  // Para não retornar atributos da tabela de junção
-          as: 'categories',
-          attributes: ['id']
-        }
+        { model: Image, as: 'product_images', attributes: ['id', 'path'] },
+        { model: Category, through: { attributes: [] }, as: 'categories', attributes: ['id'] }
       ]
     });
 
+    // Format products
     const formattedProducts = products.map(product => {
-      let formattedProduct = {};
-
-      // Inclua apenas os atributos desejados
+      const formattedProduct = {};
       attributes.forEach(attr => {
         formattedProduct[attr] = product[attr];
       });
-
-      // Adiciona category_ids e product_images se solicitado
       if (!fields || fields.includes('category_ids')) {
         formattedProduct.category_ids = product.categories.map(category => category.id);
       }
-
       if (!fields || fields.includes('product_images')) {
-        formattedProduct.product_images = product.product_images.map(image => ({
-          id: image.id,
-          path: image.path
-        }));
+        formattedProduct.product_images = product.product_images.map(image => ({ id: image.id, path: image.path }));
       }
-
       return formattedProduct;
     });
 
-    res.status(200).json({
-      data: formattedProducts,
-      total: total,
-      limit: limitValue,
-      page: pageValue
-    });
-
+    // Send response
+    res.status(200).json({ data: formattedProducts, total, limit: limitValue, page: pageValue });
   } catch (error) {
     console.error('Erro ao obter produtos:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+};
+
+const getProduct = async (req, res) => {
+
+  const productId = req.params.id;
+  const attributes = ['id', 'enabled', 'name', 'slug', 'stock', 'description', 'price', 'price_with_discount'];
+
+  try {
+    const produto = await Product.findByPk(productId, {
+      attributes: attributes,
+      include: [
+        { model: Image, as: 'product_images', attributes: ['id', 'path'] },
+        { model: Category, through: { attributes: [] }, as: 'categories', attributes: ['id'] }
+      ]
+    });
+
+    if (produto) {
+      res.status(200).json(produto);
+    } else {
+      res.status(404).json({ error: "O recurso solicitado não existe" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -167,33 +161,33 @@ const createProduct = async (req, res) => {
   }
 };
 
-  const deleteProduct = async (req, res) => {
-    try {
+const deleteProduct = async (req, res) => {
+  try {
 
-        const id = Number(req.params.id)
+      const id = Number(req.params.id)
 
-       await productsCategories.destroy ({ where: {product_id: id}})  
-       await Options.destroy ({ where: {product_id: id}})  
-       await Categories.destroy ({ where: {product_id: id}})  
-       await Image.destroy ({ where: {product_id: id}})  
-      const produto = await Product.destroy({ where: {id:id}})
-      console.log('produto cheguei aq')
-      console.log(produto)
-            if(produto){
-                res.status(204).json('Produto deletado :)')
-            }else{
-                res.status(401).send('Produto não encontrado ou não existe')
-            }
+      await productsCategories.destroy ({ where: {product_id: id}})  
+      await Options.destroy ({ where: {product_id: id}})  
+      await Categories.destroy ({ where: {product_id: id}})  
+      await Image.destroy ({ where: {product_id: id}})  
+    const produto = await Product.destroy({ where: {id:id}})
+    console.log('produto cheguei aq')
+    console.log(produto)
+          if(produto){
+              res.status(204).json('Produto deletado :)')
+          }else{
+              res.status(401).send('Produto não encontrado ou não existe')
+          }
 
 
-        }catch(erro) {
-        console.error('404 - Erro ao buscar produto:', erro)
-      }
-  }
+      }catch(erro) {
+      console.error('404 - Erro ao buscar produto:', erro)
+    }
+}
 
   module.exports ={
     getProducts,
     createProduct,
     deleteProduct,
-    // getProduct
+    getProduct
   }
