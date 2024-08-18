@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "start": "node --env-file=../.env server.js "
   },
   "keywords": [],
   "author": "",
