@@ -1,19 +1,13 @@
 const { Op } = require('sequelize');
-const Product = require('../models/productModel.js');
-const Categories = require('../models/productsCategories.js');
-const Image = require('../models/ImgsProducts.js');
-const Options = require ('../models/optionModel.js');
-const productsCategories = require('../models/productsCategories.js');
+const { Product, Image, Category, productsCategories } = require('../models/productAssociations.js');
 
-
-
-const getProduct = async (req, res) => {
+const getProducts = async (req, res) => {
   try {
     const { limit, page, fields, match, category_ids, priceRange, 'option[45]': optionValues } = req.query;
 
     const limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12);
     const pageValue = page && limitValue ? parseInt(page, 10) : 1;
-    const attributes = fields ? fields.split(',') : ['id', 'enabled', 'name', 'slug', 'stock', 'description', 'price', 'price_with_discount', 'category_ids', 'product_images'];
+    const attributes = fields ? fields.split(',') : ['id', 'enabled', 'name', 'slug', 'stock', 'description', 'price', 'price_with_discount'];
     const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0;
 
     let filtro = {};
@@ -28,7 +22,7 @@ const getProduct = async (req, res) => {
 
     if (category_ids) {
       const categories = category_ids.split(',').map(Number);
-      filtro.category_ids = { [Op.overlap]: categories };
+      filtro['$categories.id$'] = { [Op.in]: categories };
     }
 
     if (priceRange) {
@@ -40,13 +34,22 @@ const getProduct = async (req, res) => {
       filtro.options = { [Op.contains]: optionValues.split(',') };
     }
 
-    const total = await Product.count({ where: filtro });
+    const total = await Product.count({
+      where: filtro,
+      include: [
+        {
+          model: Category,
+          as: 'categories',
+          attributes: []
+        }
+      ]
+    });
 
     const products = await Product.findAll({
       where: filtro,
       limit: limitValue,
       offset: offset,
-      attributes: attributes, // Define quais atributos buscar na tabela Product
+      attributes: attributes,
       include: [
         {
           model: Image,
@@ -54,9 +57,10 @@ const getProduct = async (req, res) => {
           attributes: ['id', 'path']
         },
         {
-          model: productsCategories,
-          as: 'categories_product',
-          attributes: ['category_id']
+          model: Category,
+          through: { attributes: [] },  // Para não retornar atributos da tabela de junção
+          as: 'categories',
+          attributes: ['id']
         }
       ]
     });
@@ -66,14 +70,20 @@ const getProduct = async (req, res) => {
 
       // Inclua apenas os atributos desejados
       attributes.forEach(attr => {
-        if (attr === 'category_ids') {
-          formattedProduct.category_ids = product.categories_product.map(category => category.category_id);
-        } else if (attr === 'product_images') {
-          formattedProduct.product_images = product.product_images;
-        } else {
-          formattedProduct[attr] = product[attr];
-        }
+        formattedProduct[attr] = product[attr];
       });
+
+      // Adiciona category_ids e product_images se solicitado
+      if (!fields || fields.includes('category_ids')) {
+        formattedProduct.category_ids = product.categories.map(category => category.id);
+      }
+
+      if (!fields || fields.includes('product_images')) {
+        formattedProduct.product_images = product.product_images.map(image => ({
+          id: image.id,
+          path: image.path
+        }));
+      }
 
       return formattedProduct;
     });
@@ -89,7 +99,7 @@ const getProduct = async (req, res) => {
     console.error('Erro ao obter produtos:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
-}
+};
 
 
 const createProduct = async (req, res) => {
@@ -183,8 +193,8 @@ const createProduct = async (req, res) => {
   }
 
   module.exports ={
-    getProduct,
+    getProducts,
     createProduct,
     deleteProduct,
-    getProduct
+    // getProduct
   }
