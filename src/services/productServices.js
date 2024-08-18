@@ -101,8 +101,6 @@ const getProducts = async (req, res) => {
   }
 };
 
-
-
 const createProduct = async (req, res) => {
   const { 
     enabled,
