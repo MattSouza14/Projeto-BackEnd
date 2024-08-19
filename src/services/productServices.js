@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { Product, Image, Category, productsCategories } = require('../models/productAssociations.js');
+const { Product, Image, Category, productsCategories, Options } = require('../models/productAssociations.js');
 
 const getProducts = async (req, res) => {
   try {
@@ -44,7 +44,8 @@ const getProducts = async (req, res) => {
       attributes: attributes,
       include: [
         { model: Image, as: 'product_images', attributes: ['id', 'path'] },
-        { model: Category, through: { attributes: [] }, as: 'categories', attributes: ['id'] }
+        { model: Category, through: { attributes: [] }, as: 'categories', attributes: ['id'] },
+        { model: Options, as: 'options', attributes: { exclude: ['product_id'] } }
       ]
     });
 
@@ -59,6 +60,16 @@ const getProducts = async (req, res) => {
       }
       if (!fields || fields.includes('product_images')) {
         formattedProduct.product_images = product.product_images.map(image => ({ id: image.id, path: image.path }));
+      }
+      if (!fields || fields.includes('options')) {
+        formattedProduct.options = product.options.map(option => ({
+          id: option.id,
+          title: option.title,
+          shape: option.shape,
+          radius: option.radius,
+          type: option.type,
+          values: option.values
+        }));
       }
       return formattedProduct;
     });
@@ -161,6 +172,54 @@ const createProduct = async (req, res) => {
   }
 };
 
+const updateProduct = async (req, res) => {
+  const { id } = req.params
+  const { enabled, name, slug, stock, description, price, price_with_discount } = req.body
+
+  if (Object.keys(req.body).length === 0) {
+    return res.status(204).end()
+  }
+
+  if (!req.body.hasOwnProperty('enabled') ||
+  !req.body.hasOwnProperty('name') ||
+  !req.body.hasOwnProperty('slug') ||
+  !req.body.hasOwnProperty('stock') ||
+  !req.body.hasOwnProperty('description') ||
+  !req.body.hasOwnProperty('price')||
+  !req.body.hasOwnProperty('price_with_discount')) {
+    return res.status(400).json({
+    statusCode: 400,
+    message: 'Dados da requisição incorretos',
+  });
+  }
+
+  const product = await Product.findByPk(id)
+  
+  if (!product) {
+    return res.status(404).json({
+      statusCode: 404,
+      message: 'Produto não encontrada'
+    })
+  }
+
+  try {
+    await product.update({ enabled, name, slug, stock, description, price, price_with_discount })
+
+    return res.status(200).json({
+      statusCode: 200,
+      message: 'Produto atualizada com sucesso',
+      data: product
+    })
+
+  } catch (erro) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: 'Erro ao atualizar produto',
+      detalhes: erro.message
+    })
+  }
+}
+
 const deleteProduct = async (req, res) => {
   try {
 
@@ -187,7 +246,8 @@ const deleteProduct = async (req, res) => {
 
   module.exports ={
     getProducts,
+    getProduct,
     createProduct,
-    deleteProduct,
-    getProduct
+    updateProduct,
+    deleteProduct
   }
