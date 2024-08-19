@@ -27,7 +27,8 @@ Esta API foi desenvolvida pelos alunos do programa Geração Tech e tem como obj
 - *MySql* - Para a criação de tabelas, diagramas, inserts e consultas.
 - *Railway* - Gerenciamento do banco de dados na nuvem.
 - *MySQL12* - Driver MySQL necessário para Sequelize.
-- *Sequelize* - ORM para manipular dados sql em JS
+- *Sequelize* - ORM para manipular dados sql em JS.
+- *Cors* -  Permite que sites acessem recursos de outros domínios de forma segura.
 - *JWT* - Biblioteca para gerenciar tokens JWT.
 - *JEST* - Framework de testes para JavaScript.
 - *--save-dev* - Adiciona nodemon e jest
@@ -180,7 +181,8 @@ endpoint: http://localhost:8080/v1/product/:id
 Realize o clone do projeto e instale as seguintes dependências:
 
 ```
-npm install express dotenv nodemon sequelize mysql2 jsonwebtoken jest --save-dev
+npm install express dotenv sequelize mysql2 cors jsonwebtoken
+npm install nodemon jest --save-dev
 ```
 
 Abra o terminal integrado no arquivo server.js e execute o seguinte comando para abrir a porta:
@@ -218,6 +220,8 @@ project-root/
 ├── .gitignore
 └── package.json
 ```
+
+
 
 
 
