@@ -13,7 +13,7 @@ const token = retornoToken
 if (!token) return res.status(401).json({ error: 'Acesso negado' });
 
 try {
- const tokenDecodado = jwt.verify(token, process.env.JWT_SECRET);
+ const tokenDecodado = jwt.verify(token, '85985958');
  req.userId = tokenDecodado.userId;
 
  next();

@@ -219,6 +219,8 @@ project-root/
 └── package.json
 ```
 
-## Considerações Finais: 
-Este projeto foi um desafio que nos colocou sob pressão, e sua realização é um reflexo do comprometimento que tivemos durante toda a jornada. Levaremos conosco tanto os erros quanto os acertos, e o aprendizado adquirido ao longo do processo nos abrirá novas portas.
+
+
+
+
 
