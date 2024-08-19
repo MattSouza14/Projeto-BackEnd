@@ -17,7 +17,6 @@ const deleteProduct = (req, res) => {
     productServices.deleteProduct(req, res)
 }
   
-
 module.exports = {
     getProducts,
     getProduct,

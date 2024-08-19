@@ -1,6 +1,4 @@
-// const Usuario = require('../models/usuariosModel')
 const userServices = require('../services/usuariosServices')
-
 
 const getUsers = async(req, res)=>{
      return userServices.getAllUsuarios(req, res)

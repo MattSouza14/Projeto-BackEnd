@@ -1,25 +1,20 @@
-const jwt = require('jsonwebtoken');
-
+const jwt = require('jsonwebtoken')
 function verificarToken(req, res, next) {
-
-const retornoToken = req.header('Authorization');
-
-console.log(retornoToken);
-
+const retornoToken = req.header('Authorization')
+console.log(retornoToken)
 
 const token = retornoToken
 
-
-if (!token) return res.status(401).json({ error: 'Acesso negado' });
+if (!token) return res.status(401).json({ error: 'Acesso negado' })
 
 try {
- const tokenDecodado = jwt.verify(token, '85985958');
- req.userId = tokenDecodado.userId;
+ const tokenDecodado = jwt.verify(token, '85985958')
+ req.userId = tokenDecodado.userId
 
- next();
+ next()
  } catch (error) {
- res.status(401).json({ error: 'Token invalido' });
+ res.status(401).json({ error: 'Token invalido' })
  }
- };
+ }
 
-module.exports = verificarToken;
+module.exports = verificarToken

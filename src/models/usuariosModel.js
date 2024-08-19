@@ -1,5 +1,5 @@
-const sequelize = require('../config/database')//Sempre fazer o require quando criar um novo model
-const { DataTypes } = require('sequelize');//Sempre fazer o require do datatype ao criar um novo model
+const sequelize = require('../config/database')
+const { DataTypes } = require('sequelize')
 const Usuario = sequelize.define('users', { 
     id: {
       type: DataTypes.INTEGER,
@@ -40,5 +40,5 @@ const Usuario = sequelize.define('users', {
     updatedAt: 'updated_at'
   })
 
-  
+
   module.exports = Usuario

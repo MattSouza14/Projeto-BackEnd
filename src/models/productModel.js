@@ -1,8 +1,6 @@
-// models/productModel.js
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const { DataTypes } = require('sequelize')
+const sequelize = require('../config/database')
 
-    
 const Product = sequelize.define('products', {
   id: {
     type: DataTypes.INTEGER,
@@ -46,5 +44,4 @@ price_with_discount: {
   timestamps: false
 })
 
-
-module.exports = Product;
+module.exports = Product
