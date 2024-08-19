@@ -3,7 +3,7 @@
 //node --env-file=../.env server.js   <- nova maneira de iniciar o server.js!!!!!!!!
 //=============================================================================
 
-const app = require('./app');
+const app = require('./app')
 const sequelize = require('./config/database')
 
 sequelize.sync()
@@ -14,4 +14,4 @@ sequelize.sync()
 })
 .catch(err => {
   console.error('Erro ao conectar com o banco de dados:', err)
-});
+})

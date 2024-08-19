@@ -2,10 +2,9 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const Usuario = require('../models/usuariosModel')
 
-
 const login = async(req, res) => {
     try {
-    const { email, password} = req.body;
+    const { email, password} = req.body
 
     const user = await Usuario.findOne({ where: { email: email },  attributes: ['email', 'password'] })
         console.log(user)
@@ -32,15 +31,12 @@ const login = async(req, res) => {
 		    { expiresIn: '1h' }
     )
    
-    
     res.status(200).json(
         { message: 'Login realizado com sucesso', token: token })  
         
     } catch (error) {
         res.status(400).json({ message: 'Erro ao fazer login' })
     }
-    
-
 }
 
 const getAllUsuarios = (req, res) => {
@@ -74,25 +70,24 @@ const getUsuario = async (req, res) => {
                 res.status(404).send('Usuario não encontrado ou não existe')
             }
         
-        
         }catch(erro) {
         console.error('Erro ao buscar usuário:', erro)
       }
   }
 
 const createUsuario = async (req, res) => {
-    const { firstname, surname, email, password } = req.body;
+    const { firstname, surname, email, password } = req.body
    
-    const saltRounds = 10;
+    const saltRounds = 10
     try {
-       let senhaCriptografada = await bcrypt.hash(password, saltRounds);
+       let senhaCriptografada = await bcrypt.hash(password, saltRounds)
         
         const newUser = await Usuario.create({
             firstname: firstname, 
             surname: surname, 
             email: email, 
             password: senhaCriptografada,
-        });
+        })
 
         let createSucess = {
             statusCode: 201,
@@ -100,38 +95,38 @@ const createUsuario = async (req, res) => {
             surname: newUser.surname,
             email: newUser.email,
             password: newUser.password,
-        };
+        }
 
-        res.status(201).json(createSucess);
+        res.status(201).json(createSucess)
 
     } catch (erro) {
-        console.log(erro);
+        console.log(erro)
         res.status(400).json({
             statusCode: 400,
             message: 'Erro ao criar um novo usuario'
-        });
+        })
     }
 }
 
 const updateUsuario = async (req, res) => {
-    const id  = req.params.id;
-    const { firstname, surname, email, password } = req.body;
+    const id  = req.params.id
+    const { firstname, surname, email, password } = req.body
 
     try {
-        const usuario = await Usuario.findByPk(id);
+        const usuario = await Usuario.findByPk(id)
         
         if (usuario) {
         
             if (password) {
-                const saltRounds = 10;
-               senhaCriptografada = await bcrypt.hash(password, saltRounds);
+                const saltRounds = 10
+               senhaCriptografada = await bcrypt.hash(password, saltRounds)
             }
             await usuario.update({
                 firstname: firstname,  
                 surname: surname,
                 email: email,
                 password: senhaCriptografada, 
-            });
+            })
             let updateSuccess ={
                     statusCode: 200,
                     message: 'Usuário atualizado com sucesso',
@@ -139,26 +134,25 @@ const updateUsuario = async (req, res) => {
                     surname: usuario.surname,
                     email: usuario.email,
             }
-            res.status(200).json(updateSuccess);
+            res.status(200).json(updateSuccess)
         }
             res.status(404).json({
             statusCode: 404,
             message: 'Usuário não encontrado',
-        });
+        })
     } catch (erro) {
         res.status(400).json({
             statusCode: 400,
             message: 'Erro ao atualizar o usuário',
             detalhes: erro
-        });
+        })
     }
-
-};
+}
 
 const deleteUsuario = async (req, res) => {
     try {
         const userId = req.params.id
-        const usuario = await Usuario.destroy({ where: { id: userId } });
+        const usuario = await Usuario.destroy({ where: { id: userId } })
 
             if(usuario){
                 let objSucess ={
@@ -173,12 +167,10 @@ const deleteUsuario = async (req, res) => {
                 res.status(401).send('Usuario não encontrado ou não existe')
             }
         
-        
         }catch(erro) {
         console.error('404 - Erro ao buscar usuário:', erro)
       }
   }
-
 
 module.exports = {
     getUsuario,

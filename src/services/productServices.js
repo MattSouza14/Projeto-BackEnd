@@ -1,41 +1,38 @@
-const { Op } = require('sequelize');
-const { Product, Image, Category, productsCategories, Options } = require('../models/productAssociations.js');
+const { Op } = require('sequelize')
+const { Product, Image, Category, productsCategories, Options } = require('../models/productAssociations.js')
 
 const getProducts = async (req, res) => {
   try {
-    const { limit, page, fields, match, category_ids, priceRange, 'option[45]': optionValues } = req.query;
+    const { limit, page, fields, match, category_ids, priceRange, 'option[45]': optionValues } = req.query
 
-    // Set default values and parse inputs
-    const limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12);
-    const pageValue = page && limitValue ? parseInt(page, 10) : 1;
-    const attributes = fields ? fields.split(',') : ['id', 'enabled', 'name', 'slug', 'stock', 'description', 'price', 'price_with_discount'];
-    const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0;
+    const limitValue = limit === '-1' ? null : (limit ? parseInt(limit, 10) : 12)
+    const pageValue = page && limitValue ? parseInt(page, 10) : 1
+    const attributes = fields ? fields.split(',') : ['id', 'enabled', 'name', 'slug', 'stock', 'description', 'price', 'price_with_discount']
+    const offset = limitValue && pageValue ? limitValue * (pageValue - 1) : 0
 
-    // Build filter
-    const filtro = {};
+    const filtro = {}
     if (match) {
       filtro[Op.or] = [
         { name: { [Op.like]: `%${match}%` } },
         { description: { [Op.like]: `%${match}%` } }
-      ];
+      ]
     }
     if (category_ids) {
-      const categories = category_ids.split(',').map(Number);
-      filtro['$categories.id$'] = { [Op.in]: categories };
+      const categories = category_ids.split(',').map(Number)
+      filtro['$categories.id$'] = { [Op.in]: categories }
     }
     if (priceRange) {
-      const [minPrice, maxPrice] = priceRange.split('-').map(Number);
-      filtro.price = { [Op.between]: [minPrice, maxPrice] };
+      const [minPrice, maxPrice] = priceRange.split('-').map(Number)
+      filtro.price = { [Op.between]: [minPrice, maxPrice] }
     }
     if (optionValues) {
-      filtro.options = { [Op.contains]: optionValues.split(',') };
+      filtro.options = { [Op.contains]: optionValues.split(',') }
     }
 
-    // Fetch total count and products
     const total = await Product.count({
       where: filtro,
       include: [{ model: Category, as: 'categories', attributes: [] }]
-    });
+    })
 
     const products = await Product.findAll({
       where: filtro,
@@ -47,19 +44,18 @@ const getProducts = async (req, res) => {
         { model: Category, through: { attributes: [] }, as: 'categories', attributes: ['id'] },
         { model: Options, as: 'options', attributes: { exclude: ['product_id'] } }
       ]
-    });
+    })
 
-    // Format products
     const formattedProducts = products.map(product => {
-      const formattedProduct = {};
+      const formattedProduct = {}
       attributes.forEach(attr => {
-        formattedProduct[attr] = product[attr];
-      });
+        formattedProduct[attr] = product[attr]
+      })
       if (!fields || fields.includes('category_ids')) {
-        formattedProduct.category_ids = product.categories.map(category => category.id);
+        formattedProduct.category_ids = product.categories.map(category => category.id)
       }
       if (!fields || fields.includes('product_images')) {
-        formattedProduct.product_images = product.product_images.map(image => ({ id: image.id, path: image.path }));
+        formattedProduct.product_images = product.product_images.map(image => ({ id: image.id, path: image.path }))
       }
       if (!fields || fields.includes('options')) {
         formattedProduct.options = product.options.map(option => ({
@@ -69,23 +65,22 @@ const getProducts = async (req, res) => {
           radius: option.radius,
           type: option.type,
           values: option.values
-        }));
+        }))
       }
-      return formattedProduct;
-    });
+      return formattedProduct
+    })
 
-    // Send response
-    res.status(200).json({ data: formattedProducts, total, limit: limitValue, page: pageValue });
+    res.status(200).json({ data: formattedProducts, total, limit: limitValue, page: pageValue })
   } catch (error) {
-    console.error('Erro ao obter produtos:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Erro ao obter produtos:', error)
+    res.status(500).json({ error: 'Erro interno do servidor' })
   }
-};
+}
 
 const getProduct = async (req, res) => {
 
-  const productId = req.params.id;
-  const attributes = ['id', 'enabled', 'name', 'slug', 'stock', 'description', 'price', 'price_with_discount'];
+  const productId = req.params.id
+  const attributes = ['id', 'enabled', 'name', 'slug', 'stock', 'description', 'price', 'price_with_discount']
 
   try {
     const produto = await Product.findByPk(productId, {
@@ -94,17 +89,17 @@ const getProduct = async (req, res) => {
         { model: Image, as: 'product_images', attributes: ['id', 'path'] },
         { model: Category, through: { attributes: [] }, as: 'categories', attributes: ['id'] }
       ]
-    });
+    })
 
     if (produto) {
-      res.status(200).json(produto);
+      res.status(200).json(produto)
     } else {
-      res.status(404).json({ error: "O recurso solicitado não existe" });
+      res.status(404).json({ error: "O recurso solicitado não existe" })
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message })
   }
-};
+}
 
 const createProduct = async (req, res) => {
   const { 
@@ -118,11 +113,11 @@ const createProduct = async (req, res) => {
     category_ids,
     images,
     options 
-  } = req.body;
+  } = req.body
 
   try {
     if (!name || !slug || !price) {
-      return res.status(400).json({ error: 'Nome, slug e preço são obrigatórios' });
+      return res.status(400).json({ error: 'Nome, slug e preço são obrigatórios' })
     }
 
     const newProduct = await Product.create({
@@ -133,11 +128,10 @@ const createProduct = async (req, res) => {
       description,
       price,
       price_with_discount
-    });
+    })
 
- 
     if (category_ids && category_ids.length) {
-      await newProduct.addCategories(category_ids);
+      await newProduct.addCategories(category_ids)
     }
 
     if (images && images.length) {
@@ -146,8 +140,8 @@ const createProduct = async (req, res) => {
           type: img.type,
           content: img.content,
           productId: newProduct.id
-        });
-      }));
+        })
+      }))
     }
 
     if (options && options.length) {
@@ -160,17 +154,17 @@ const createProduct = async (req, res) => {
           value: opt.value,
           values: opt.values,
           productId: newProduct.id
-        });
-      }));
+        })
+      }))
     }
 
-    res.status(201).json(newProduct);
+    res.status(201).json(newProduct)
 
   } catch (error) {
-    console.error('Erro ao criar o produto:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Erro ao criar o produto:', error)
+    res.status(500).json({ error: 'Erro interno do servidor' })
   }
-};
+}
 
 const updateProduct = async (req, res) => {
   const { id } = req.params
@@ -190,7 +184,7 @@ const updateProduct = async (req, res) => {
     return res.status(400).json({
     statusCode: 400,
     message: 'Dados da requisição incorretos',
-  });
+  })
   }
 
   const product = await Product.findByPk(id)
@@ -237,7 +231,6 @@ const deleteProduct = async (req, res) => {
           }else{
               res.status(401).send('Produto não encontrado ou não existe')
           }
-
 
       }catch(erro) {
       console.error('404 - Erro ao buscar produto:', erro)
